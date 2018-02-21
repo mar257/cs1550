@@ -578,7 +578,7 @@ sys_draw_pixel(void)
 //     }
 // }
 
-void drawline(int x0, int y0, int x1, int y2, int color) {
+void drawline(int x0, int y0, int x1, int y1, int color) {
 	int x, y, dx, dy, pixel, temp;
 
 	dx = x0 - x1;
@@ -588,7 +588,7 @@ void drawline(int x0, int y0, int x1, int y2, int color) {
 		dx*=-1;
 	}
 	if(dy<0){
-		dy*=-1
+		dy*=-1;
 	}
 
 	pixel = 2 * dy - dx;
