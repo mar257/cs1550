@@ -493,7 +493,7 @@ sys_clear_screen(void)
 	return 0;
 }
 
-static void black(void)
+static void _black(void)
 {
 	//set all pixels black
 	int i;
