@@ -464,7 +464,7 @@ static void _black()
 	//set all pixels black
 	int i;
 	for(i=0; i<4; i++)
-	memset(buffer[i], 0, framebuffersize);
+	memset(screenbuffer[i], 0, framebuffersize);
 }
 int
 sys_init_graphics(void)
@@ -506,7 +506,6 @@ void drawpixel(int x, int y, int color){
 	pixel = (640*y)/8 + (x/8);
 	bit = x%8;
 	for(i=0; i<4; i++) {
-		char toset = screenbuffer[i][pixel];
 		char current = screenbuffer[i][pixel];
 		char shifted = ((color >> i) & 1) << bit;
 		if (shifted == 0) {
@@ -516,7 +515,7 @@ void drawpixel(int x, int y, int color){
 			// set the bit.
 			current |= shifted;
 		}
-		offscreen_buffer[p][pixel] = current;
+		screenbuffer[i][pixel] = current;
 	}
 }
 
