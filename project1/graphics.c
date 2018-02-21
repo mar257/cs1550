@@ -545,4 +545,5 @@ sys_blit(void)
 		set_plane(p);
 		memmove(fb, screenbuffer[p], framebuffersize);
 	}
+	return 0;
 }
