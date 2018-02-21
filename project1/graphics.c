@@ -579,7 +579,7 @@ sys_draw_pixel(void)
 // }
 
 void drawline(int x1, int y1, int x2, int y2, int color) {
-	int x0, x1, y0, y1, x, y, dx, dy, pixel, temp;
+	int x, y, dx, dy, pixel, temp;
 
 	dx = x0 - x1;
 	dy = y0 - y1;
