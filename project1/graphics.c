@@ -471,7 +471,8 @@ sys_init_graphics(void)
 {
 
 	write_regs(g_640x480x16);
-        graphics_mode = 1;
+	graphics_mode = 1;
+	_black();
 	//TO-DO: Complete the function body
 	return 0;
 }
@@ -506,14 +507,14 @@ void drawpixel(int x, int y, int color){
 	pixel = (640*y)/8 + (x/8);
 	bit = x%8;
 	for(i=0; i<4; i++) {
-		char current = screenbuffer[i][pixel];
-		char shifted = ((color >> i) & 1) << bit;
-		if (shifted == 0) {
-			// Unset the bit.
-			current &= ~shifted;
+		char selected = screenbuffer[i][pixel];
+		char shift = (color >> i) & 1 // move relevant color bit down 0 position, get only that bit
+		shift = shift << bit // select which bit
+		if (shift == 0) {
+			selected = selected & ~shift; 	// unset bit
+
 		} else {
-			// set the bit.
-			current |= shifted;
+			selected = selected | shift;	// set bit
 		}
 		screenbuffer[i][pixel] = current;
 	}

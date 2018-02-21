@@ -6,8 +6,8 @@
 int main(void)
 {
 printf(1, "init_graphics: %d", init_graphics());
-printf(1, "exit_graphics: %d", exit_graphics());
-printf(1, "getkey: %d", getkey());
+// printf(1, "exit_graphics: %d", exit_graphics());
+// printf(1, "getkey: %d", getkey());
 
 printf(1, "clear_screen %d", clear_screen());
 
