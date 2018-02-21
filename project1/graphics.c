@@ -459,6 +459,17 @@ int is_graphics(void) {
    return graphics_mode;
 }
 
+int
+sys_blit(void)
+{
+	unsigned char * fb = (unsigned char *) P2V(0xa0000);
+	for (int p = 0; p < 4; p++) {
+		set_plane(p);
+		memmove(fb, screenbuffer[p], framebuffersize);
+	}
+	return 0;
+}
+
 static void _black()
 {
 	//set all pixels black
@@ -474,7 +485,6 @@ sys_init_graphics(void)
 	graphics_mode = 1;
 	_black();
 	sys_blit();
-	//TO-DO: Complete the function body
 	return 0;
 }
 
@@ -541,15 +551,4 @@ sys_draw_line(void)
 	int x1, y1, x2, y2, color;
 	if((argint(0, &x1) < 0) || (argint(1, &y1) < 0) || (argint(2, &x2) < 0) || (argint(3, &y2) < 0) || (argint(4, &color) < 0)) return -1; //missing args
 	return x1 + y1 + x2 + y2 + color;
-}
-
-int
-sys_blit(void)
-{
-	unsigned char * fb = (unsigned char *) P2V(0xa0000);
-	for (int p = 0; p < 4; p++) {
-		set_plane(p);
-		memmove(fb, screenbuffer[p], framebuffersize);
-	}
-	return 0;
 }
