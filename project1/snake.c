@@ -32,6 +32,5 @@ int main(void)
         exit();
       }
     }
-    sleep(5);
   }
 }
