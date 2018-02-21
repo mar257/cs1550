@@ -549,7 +549,7 @@ sys_clear_screen(void)
 //helper method for syscall draw_pixel
 void drawpixel(int x, int y, int color) {
 	int pixel, bit, i;
-	pixel = (640*y)/8 + (640*x/8);
+	pixel = (640*y)/8 + (x/8);
 	bit = x%8;
 	for(i=0; i<4; i++) {
 		char selected = screenbuffer[i][pixel];
