@@ -579,22 +579,43 @@ sys_draw_pixel(void)
 // }
 
 void drawline(int x1, int y1, int x2, int y2, int color) {
-	int m_new = 2 * (y2 - y1);
-	int slope_error_new = m_new - (x2 - x1);
-	for (int x = x1, y = y1; x <= x2; x++)
-	{
-		 // cout << "(" << x << "," << y << ")\n";
-		 drawpixel(x,y,color);
-		 // Add slope to increment angle formed
-		 slope_error_new += m_new;
+	dx = x0 - x1;
+	dy = y0 - y1;
 
-		 // Slope error reached limit, time to
-		 // increment y and update slope error.
-		 if (slope_error_new >= 0)
-		 {
-				y++;
-				slope_error_new  -= 2 * (x2 - x1);
-		 }
+	if(dx<0){
+		dx*=-1;
+	}
+	if(dy<0){
+		dy*=-1
+	}
+
+	pixel = 2 * dy - dx;
+	if(x0 > x1)
+	{
+		x = x1;
+		y = y1;
+		temp = x0;
+	}
+	else
+	{
+		x = x0;
+		y = y0;
+		temp = x1;
+	}
+	drawpixel(x, y, color);
+	while(x < temp)
+	{
+		x++;
+		if(pixel < 0)
+		{
+			pixel = pixel + 2 * dy;
+		}
+		else
+		{
+			y++;
+			pixel = pixel + 2 * (dy - dx);
+		}
+		drawpixel(x, y, color);
 	}
 }
 
