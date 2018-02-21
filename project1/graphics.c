@@ -489,7 +489,7 @@ sys_getkey(void)
 int
 sys_clear_screen(void)
 {
-	black();
+	_black();
 	return 0;
 }
 
