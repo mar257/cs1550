@@ -11,7 +11,7 @@ printf(1, "init_graphics: %d", init_graphics());
 
 printf(1, "clear_screen %d", clear_screen());
 for(int i=0; i<300; i++)
-  draw_pixel(320,320+i,i%16);
+  draw_pixel(320,0+i,i%16);
 
 printf(1, "blit: %d", blit());
 sleep(500);
