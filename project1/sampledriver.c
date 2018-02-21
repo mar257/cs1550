@@ -12,5 +12,6 @@ printf(1, "clear_screen %d", clear_screen());
 printf(1, "draw_pixel: %d", draw_pixel(1,2,3));
 printf(1, "draw_line: %d", draw_line(1,2,3,4,5));
 printf(1, "blit: %d", blit());
+printf(1, "Test");
 exit();
 }
