@@ -11,6 +11,7 @@ int main(void)
   // int x,y;
   while(1){
     int key = getkey();
+    printf(1, "---- %d", key);
     if(key!=-1){
       printf(1, "---- %d", key);
 
