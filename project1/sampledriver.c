@@ -35,7 +35,7 @@ blit();
 
 while(1){
   int key = getkey();
-  if(key!=0){
+  if(key!=-1){
     printf(1, "%d", key);
   }
 }
