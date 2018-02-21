@@ -15,23 +15,23 @@ printf(1, "clear_screen %d", clear_screen());
 blit();
 
 // draw_line(100,200,500,200, 14);
-draw_line(500,400,100,400, 13);
-blit();
-sleep(500);
-
-clear_screen();
-blit();
-
-draw_line(600,200,600,500, 13);
-blit();
-sleep(500);
-
-clear_screen();
-blit();
-
-draw_line(100,200,400,500, 13);
-blit();
-sleep(500);
+// draw_line(500,400,100,400, 13);
+// blit();
+// sleep(500);
+//
+// clear_screen();
+// blit();
+//
+// draw_line(600,200,600,500, 13);
+// blit();
+// sleep(500);
+//
+// clear_screen();
+// blit();
+//
+// draw_line(100,200,400,500, 13);
+// blit();
+// sleep(500);
 
 while(1){
   printf(1, "%d", getkey());

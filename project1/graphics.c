@@ -532,7 +532,7 @@ sys_getkey(void)
 		return -1;
 	}
 	int key = input.buf[input.r];
-	r++;
+	input.r++;
 	return key;
 }
 
