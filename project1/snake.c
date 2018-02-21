@@ -7,7 +7,7 @@
 typedef struct position{
   int x;
   int y;
-}
+};
 int main(void)
 {
   init_graphics();
