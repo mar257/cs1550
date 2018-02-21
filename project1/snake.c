@@ -16,6 +16,7 @@ int main(void)
   // int x,y;
   while(1){
     draw_pixel(current.x,current.y,12);
+    blit();
     int key = getkey();
     printf(1, "%d", key);
     if(key!=-1){
