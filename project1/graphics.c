@@ -516,13 +516,13 @@ void
 graphicsintr(int (*getc)(void))
 {
 	int c;
-  acquire(&graphics_lock.lock);
+  acquire(&graphics_lock);
   while((c = getc()) >= 0){
       if(c != 0 && input.e-input.r < INPUT_BUF){
         input.buf[input.e++ % INPUT_BUF] = c;
       }
   }
-  release(&graphics_lock.lock);
+  release(&graphics_lock);
 }
 
 int
