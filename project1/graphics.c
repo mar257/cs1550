@@ -455,6 +455,10 @@ static void write_font(unsigned char *buf, unsigned font_height)
 #define framebuffersize 640*480/8
 unsigned char screenbuffer[4][framebuffersize];
 int graphics_mode = 0;
+
+struct spinlock graphics_lock;
+
+
 int is_graphics(void) {
    return graphics_mode;
 }
@@ -511,13 +515,14 @@ struct {
 void
 graphicsintr(int (*getc)(void))
 {
-  acquire(&graphics.lock);
+	int c;
+  acquire(&graphics_lock.lock);
   while((c = getc()) >= 0){
       if(c != 0 && input.e-input.r < INPUT_BUF){
         input.buf[input.e++ % INPUT_BUF] = c;
       }
   }
-  release(&graphics.lock);
+  release(&graphics_lock.lock);
 }
 
 int
