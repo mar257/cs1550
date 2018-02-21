@@ -21,9 +21,9 @@ sleep(100);
 clear_screen();
 blit();
 
-draw_line(100,200,500,200, 14);
-draw_line(500,400,100,400, 13);
-draw_line(600,200,600,500, 13);
+draw_line(100,200,500,200, 2);
+// draw_line(500,400,100,400, 13);
+// draw_line(600,200,600,500, 13);
 blit();
 sleep(500);
 
