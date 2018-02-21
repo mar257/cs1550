@@ -452,13 +452,6 @@ assume: chain-4 addressing already off */
 	outb(VGA_GC_DATA, gc6);
 }
 
-static void _black()
-{
-	//set all pixels black
-	int i;
-	for(i=0; i<4; i++)
-	memset(buffer[i], 0, framebuffersize);
-}
 #define framebuffersize 640*480/8
 char buffer [4][framebuffersize];
 int graphics_mode = 0;
@@ -466,6 +459,13 @@ int is_graphics(void) {
    return graphics_mode;
 }
 
+static void _black()
+{
+	//set all pixels black
+	int i;
+	for(i=0; i<4; i++)
+	memset(buffer[i], 0, framebuffersize);
+}
 int
 sys_init_graphics(void)
 {
