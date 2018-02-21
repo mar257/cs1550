@@ -452,7 +452,7 @@ assume: chain-4 addressing already off */
 	outb(VGA_GC_DATA, gc6);
 }
 
-#define framebuffersize 640*640/8
+#define framebuffersize 640*480/8
 char buffer [4][framebuffersize];
 int graphics_mode = 0;
 int is_graphics(void) {
