@@ -1,13 +1,14 @@
+#include "graphics.h"
 #include "types.h"
 #include "user.h"
 #include "syscall.h"
 
 #define start 320
 
-typedef struct position{
+struct position{
   int x;
   int y;
-} position;
+};
 int main(void)
 {
   init_graphics();
@@ -28,8 +29,10 @@ int main(void)
         current.y = current.y+1;
       } else if(key=='d'){
         current.x = current.x+1;
+      } else if(key=='q'){
+        exit();
       }
     }
-    sleep(25);
+    sleep(5);
   }
 }
