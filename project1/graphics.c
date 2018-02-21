@@ -489,11 +489,16 @@ sys_getkey(void)
 int
 sys_clear_screen(void)
 {
+	black();
+	return 0;
+}
+
+void black(void)
+{
 	//set all pixels black
 	int i;
 	for(i=0; i<4; i++)
 		memset(buffer[i], 0, framebuffersize);
-		return 0;
 }
 
 int

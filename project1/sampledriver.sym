@@ -1,7 +1,7 @@
 00000000 .text
 000007b0 .rodata
-00000830 .eh_frame
-00000ab4 .bss
+00000838 .eh_frame
+00000abc .bss
 00000000 .comment
 00000000 .debug_aranges
 00000000 .debug_info
@@ -14,10 +14,10 @@
 00000000 ulib.c
 00000000 printf.c
 000003f0 printint
-0000081c digits.1127
+00000824 digits.1127
 00000000 umalloc.c
-00000ab4 freep
-00000ab8 base
+00000abc freep
+00000ac0 base
 000000d0 strcpy
 00000490 printf
 000003da draw_line
@@ -41,7 +41,7 @@
 0000030a fork
 0000039a sbrk
 000003aa uptime
-00000ab4 __bss_start
+00000abc __bss_start
 00000180 memset
 00000000 main
 000003e2 blit
@@ -50,8 +50,8 @@
 000003b2 init_graphics
 000003c2 getkey
 00000250 stat
-00000ab4 _edata
-00000ac0 _end
+00000abc _edata
+00000ac8 _end
 00000372 link
 00000312 exit
 000002a0 atoi
