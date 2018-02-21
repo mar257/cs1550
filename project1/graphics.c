@@ -528,7 +528,7 @@ graphicsintr(int (*getc)(void))
 int
 sys_getkey(void)
 {
-	if(!input.buf[0]>0){
+	if(!(input.buf[0]>0)){
 		return -1;
 	}
 	int key = input.buf[input.r];
