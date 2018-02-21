@@ -524,7 +524,7 @@ graphicsintr(int (*getc)(void))
   }
   release(&graphics_lock);
 }
-
+ 
 int
 sys_getkey(void)
 {
