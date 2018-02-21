@@ -473,6 +473,7 @@ sys_init_graphics(void)
 	write_regs(g_640x480x16);
 	graphics_mode = 1;
 	_black();
+	sys_blit();
 	//TO-DO: Complete the function body
 	return 0;
 }
@@ -481,7 +482,8 @@ sys_init_graphics(void)
 int
 sys_exit_graphics(void)
 {
-
+	_black();
+	sys_blit();
 	write_regs(g_80x25_text);
 	write_font(g_8x16_font, 16);
 	graphics_mode = 0;
@@ -530,7 +532,7 @@ sys_draw_pixel(void)
 }
 
 void drawline(int x1, int y1, int x2, int y2, int color) {
-	
+
 }
 
 int
