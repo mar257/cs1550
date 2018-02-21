@@ -26,6 +26,13 @@ draw_line(600,200,600,500, 13);
 blit();
 sleep(500);
 
+clear_screen();
+blit();
+
+draw_line(100,200,400,500, 13);
+blit();
+sleep(500);
+
 // printf(1, "draw_line: %d", draw_line(1,2,3,4,5));
 // printf(1, "Test");
 
