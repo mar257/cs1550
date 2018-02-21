@@ -508,11 +508,10 @@ void drawpixel(int x, int y, int color){
 	bit = x%8;
 	for(i=0; i<4; i++) {
 		char selected = screenbuffer[i][pixel];
-		char shift = (color >> i) & 1 // move relevant color bit down 0 position, get only that bit
-		shift = shift << bit // select which bit
+		char shift = (color >> i) & 1; // move relevant color bit down 0 position, get only that bit
+		shift = shift << bit; // select which bit
 		if (shift == 0) {
 			selected = selected & ~shift; 	// unset bit
-
 		} else {
 			selected = selected | shift;	// set bit
 		}
