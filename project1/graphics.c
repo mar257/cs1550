@@ -547,6 +547,15 @@ void drawline(int x0, int y0, int x1, int y1, int color) {
     dx=x1-x0;
     dy=y1-y0;
 
+		// my code
+		if(dx<0){
+			dx = -1*dx;
+		}
+		if(dy<0){
+			dy = -1*dy;
+		}
+		// end my code
+		// 
     x=x0;
     y=y0;
 
