@@ -578,47 +578,120 @@ sys_draw_pixel(void)
 //     }
 // }
 
-void drawline(int x0, int y0, int x1, int y1, int color) {
-	int x, y, dx, dy, pixel, temp;
+// void drawline(int x0, int y0, int x1, int y1, int color) {
+// 	int x, y, dx, dy, pixel, temp;
+//
+// 	dx = x0 - x1;
+// 	dy = y0 - y1;
+//
+// 	if(dx<0){
+// 		dx*=-1;
+// 	}
+// 	if(dy<0){
+// 		dy*=-1;
+// 	}
+//
+// 	pixel = 2 * dy - dx;
+// 	if(x0 > x1)
+// 	{
+// 		x = x1;
+// 		y = y1;
+// 		temp = x0;
+// 	}
+// 	else
+// 	{
+// 		x = x0;
+// 		y = y0;
+// 		temp = x1;
+// 	}
+// 	drawpixel(x, y, color);
+// 	while(x < temp)
+// 	{
+// 		x++;
+// 		if(pixel < 0)
+// 		{
+// 			pixel = pixel + 2 * dy;
+// 		}
+// 		else
+// 		{
+// 			y++;
+// 			pixel = pixel + 2 * (dy - dx);
+// 		}
+// 		drawpixel(x, y, color);
+// 	}
+// }
 
-	dx = x0 - x1;
-	dy = y0 - y1;
+void drawline(int x1, int y1, int x2, int y2, int color) {
+	if(x1 == x2 && y1 == y2){
+        //edge case where the 2 points are the same
+        draw_pixel(x1, y1, color);
+        return;
+    }
+    float dx_abs,dy_abs;
+    int flag_swap_h_v = 0;
+    float dx = x2-x1;
+    float dy = y2-y1;
 
-	if(dx<0){
-		dx*=-1;
-	}
-	if(dy<0){
-		dy*=-1;
-	}
+    if(dx < 0){
+        dx_abs = -1*dx;
+    }else{
+        dx_abs = dx;
+    }
+    if(dy < 0){
+        dy_abs = -1*dy;
+    }else{
+        dy_abs = dy;
+    }
+    if(dx_abs < dy_abs){
+        flag_swap_h_v = 1;
+        float tempf = dx;
+        dx = dy;
+        dy = tempf;
+        int tempi = x1;
+        x1 = y1;
+        y1 = tempi;
+        tempi = x2;
+        x2 = y2;
+        y2 = tempi;
+    }
+    if(x2 < x1){
+        int tempi = x1;
+        x1 = x2;
+        x2 = tempi;
+        tempi = y1;
+        y1 = y2;
+        y2 = tempi;
+        dx = -1*dx;
+        dy = -1*dy;
+    }
 
-	pixel = 2 * dy - dx;
-	if(x0 > x1)
-	{
-		x = x1;
-		y = y1;
-		temp = x0;
-	}
-	else
-	{
-		x = x0;
-		y = y0;
-		temp = x1;
-	}
-	drawpixel(x, y, color);
-	while(x < temp)
-	{
-		x++;
-		if(pixel < 0)
-		{
-			pixel = pixel + 2 * dy;
-		}
-		else
-		{
-			y++;
-			pixel = pixel + 2 * (dy - dx);
-		}
-		drawpixel(x, y, color);
-	}
+    //account for dx == 0
+    float derr = dy/dx;
+    if(derr < 0){
+        derr = -1 * derr;
+    }
+    float err = 0.0;
+    int y_adjust;
+    if(dy > 0){
+        y_adjust = 1;
+    }else{
+        y_adjust = -1;
+    }
+
+    int y = y1;
+    int x;
+    for(x = x1; x <= x2; x++){
+        if(flag_swap_h_v){
+            draw_pixel(img, y, x, c);
+        }else{
+            draw_pixel(img, x, y, c);
+        }
+        err += derr;
+        if(err >= 0.5){
+            y = y + y_adjust;
+            err -= 1.0;
+        }
+    }
 }
 
 int
