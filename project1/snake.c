@@ -21,13 +21,13 @@ int main(void)
     printf(1, "%d", key);
     if(key!=-1){
       if(key=='w'){
-        draw_pixel(current.x,current.y-1,12);
+        current.y = current.y-1;
       } else if(key=='a'){
-        draw_pixel(current.x-1,current.y,12);
+        current.x = current.x-1;
       } else if(key=='s'){
-        draw_pixel(current.x,current.y+1,12);
+        current.y = current.y+1;
       } else if(key=='d'){
-        draw_pixel(current.x+1,current.y,12);
+        current.x = current.x+1;
       }
     }
     sleep(25);
