@@ -624,7 +624,7 @@ sys_draw_pixel(void)
 void drawline(int x1, int y1, int x2, int y2, int color) {
 	if(x1 == x2 && y1 == y2){
         //edge case where the 2 points are the same
-        draw_pixel(x1, y1, color);
+        drawpixel(x1, y1, color);
         return;
     }
     float dx_abs,dy_abs;
@@ -682,9 +682,9 @@ void drawline(int x1, int y1, int x2, int y2, int color) {
     int x;
     for(x = x1; x <= x2; x++){
         if(flag_swap_h_v){
-            draw_pixel(img, y, x, c);
+            drawpixel(y, x, color);
         }else{
-            draw_pixel(img, x, y, c);
+            drawpixel(x, y, color);
         }
         err += derr;
         if(err >= 0.5){
