@@ -452,11 +452,20 @@ static void write_font(unsigned char *buf, unsigned font_height)
 	outb(VGA_GC_DATA, gc6);
 }
 
+//Frame stuff
 #define framebuffersize 640*480/8
 unsigned char screenbuffer[4][framebuffersize];
 int graphics_mode = 0;
 
+//Keypress stuff
 struct spinlock graphics_lock;
+#define INPUT_BUF 128
+struct {
+	char buf[INPUT_BUF];
+	uint r;  // Read index
+	uint w;  // Write index
+	uint e;  // Edit index
+} input;
 
 
 int is_graphics(void) {
@@ -489,6 +498,9 @@ sys_init_graphics(void)
 	write_regs(g_640x480x16);
 	graphics_mode = 1;
 	initlock(&graphics_lock, "graphics");
+	input.w=1;
+	input.r=0;
+	input.e=0;
 	_black();
 	sys_blit();
 	return 0;
@@ -505,13 +517,6 @@ sys_exit_graphics(void)
 	return 0;
 }
 
-#define INPUT_BUF 128
-struct {
-  char buf[INPUT_BUF];
-  uint r;  // Read index
-  uint w;  // Write index
-  uint e;  // Edit index
-} input;
 
 void
 graphicsintr(int (*getc)(void))
