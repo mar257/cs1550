@@ -18,7 +18,7 @@ sleep(100);
 sleep(100);
 sleep(100);
 sleep(100);
-
+clear_screen();
 
 printf(1, "draw_line: %d", draw_line(1,2,3,4,5));
 printf(1, "Test");
