@@ -20,7 +20,13 @@ sleep(100);
 sleep(100);
 clear_screen();
 blit();
-printf(1, "draw_line: %d", draw_line(1,2,3,4,5));
+
+draw_line(100,200,200,400, 14);
+draw_line(200,100,400,200, 13);
+
+
+
+// printf(1, "draw_line: %d", draw_line(1,2,3,4,5));
 printf(1, "Test");
 
 

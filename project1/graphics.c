@@ -542,7 +542,31 @@ sys_draw_pixel(void)
 }
 
 void drawline(int x1, int y1, int x2, int y2, int color) {
+	int dx, dy, p, x, y;
 
+    dx=x1-x0;
+    dy=y1-y0;
+
+    x=x0;
+    y=y0;
+
+    p=2*dy-dx;
+
+    while(x<x1)
+    {
+        if(p>=0)
+        {
+            drawpixel(x,y,color);
+            y=y+1;
+            p=p+2*dy-2*dx;
+        }
+        else
+        {
+            drawpixel(x,y,color);
+            p=p+2*dy;
+        }
+        x=x+1;
+    }
 }
 
 int
@@ -550,5 +574,6 @@ sys_draw_line(void)
 {
 	int x1, y1, x2, y2, color;
 	if((argint(0, &x1) < 0) || (argint(1, &y1) < 0) || (argint(2, &x2) < 0) || (argint(3, &y2) < 0) || (argint(4, &color) < 0)) return -1; //missing args
+	drawline(x1,y1,x2,y2);
 	return x1 + y1 + x2 + y2 + color;
 }
