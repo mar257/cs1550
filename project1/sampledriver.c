@@ -34,7 +34,10 @@ blit();
 // sleep(500);
 
 while(1){
-  printf(1, "%d", getkey());
+  int key = getkey();
+  if(key!=0){
+    printf(1, "%d", key);
+  }
 }
 // printf(1, "draw_line: %d", draw_line(1,2,3,4,5));
 // printf(1, "Test");
