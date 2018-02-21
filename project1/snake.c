@@ -11,15 +11,15 @@ int main(void)
     if(key!=-1){
       // printf(1, "%d", key);
 
-      if(key==w){
+      if(key=='w'){
         printf(1, "w");
-      } else if(key==a){
+      } else if(key=='a'){
         printf(1, "a");
 
-      } else if(key==s){
+      } else if(key=='s'){
         printf(1, "s");
 
-      } else if(key==d){
+      } else if(key=='d'){
         printf(1, "d");
 
       }
