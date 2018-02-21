@@ -541,7 +541,7 @@ sys_draw_pixel(void)
 	return x + y + color;
 }
 
-void drawline(int x1, int y1, int x2, int y2, int color) {
+void drawline(int x0, int y0, int x1, int y1, int color) {
 	int dx, dy, p, x, y;
 
     dx=x1-x0;
