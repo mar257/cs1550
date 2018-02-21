@@ -5,7 +5,9 @@
 #define start 320
 int main(void)
 {
+  init_graphics();
   draw_pixel(320,320,16);
+  blit();
   while(1){
     int key = getkey();
     if(key!=-1){
