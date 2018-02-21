@@ -460,12 +460,11 @@ int graphics_mode = 0;
 //Keypress stuff
 struct spinlock graphics_lock;
 #define INPUT_BUF 128
+
 struct {
-	char buf[INPUT_BUF];
-	uint r;  // Read index
-	uint w;  // Write index
-	uint e;  // Edit index
+	char previous;
 } input;
+
 
 
 int is_graphics(void) {
@@ -521,12 +520,13 @@ sys_exit_graphics(void)
 void
 graphicsintr(int (*getc)(void))
 {
-	int c;
+	char c;
   acquire(&graphics_lock);
   while((c = getc()) >= 0){
-      if(c != 0 && input.e-input.r < INPUT_BUF){
-        input.buf[input.e++ % INPUT_BUF] = c;
-      }
+  	if(c!=0) {
+			input.previous = c;
+			break;
+		}
   }
   release(&graphics_lock);
 }
@@ -536,12 +536,9 @@ sys_getkey(void)
 {
 	int key=-1;
 	acquire(&graphics_lock);
-	if ((input.r + 1) % INPUT_BUF != input.w) {
-		input.r = (input.r + 1) % INPUT_BUF;
-		key = input.buf[input.r];
-	}
+	key = input.previous;	// get last key pressed
+	input.previous = -1;	// reset the previous key buffer
 	release(&graphics_lock);
-
 	return key;
 }
 
