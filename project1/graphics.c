@@ -515,7 +515,7 @@ void drawpixel(int x, int y, int color){
 		} else {
 			selected = selected | shift;	// set bit
 		}
-		screenbuffer[i][pixel] = current;
+		screenbuffer[i][pixel] = selected;
 	}
 }
 
