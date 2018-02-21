@@ -14,8 +14,10 @@ int main(void)
   blit();
   struct position current = { .x=320, .y=320 };
   // int x,y;
+  int color, i = 0;
   while(1){
-    draw_pixel(current.x,current.y,12);
+    color = i%16;
+    draw_pixel(current.x,current.y,color);
     blit();
     int key = getkey();
     printf(1, "%d", key);
@@ -32,5 +34,6 @@ int main(void)
         exit();
       }
     }
+    ++i;
   }
 }
