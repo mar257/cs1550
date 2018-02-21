@@ -488,6 +488,7 @@ sys_init_graphics(void)
 {
 	write_regs(g_640x480x16);
 	graphics_mode = 1;
+	initlock(&graphics_lock, "graphics");
 	_black();
 	sys_blit();
 	return 0;
