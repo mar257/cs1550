@@ -5,14 +5,14 @@
 #define start 320
 
 struct {
-  int x=320;
-  int y=320;
-} current;
+  int x;
+  int y;
+} position;
 int main(void)
 {
   init_graphics();
-
   blit();
+  struct position current = { .x=320, .y=320 };
   // int x,y;
   while(1){
     draw_pixel(current.x,current.y,12);
