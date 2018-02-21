@@ -8,7 +8,7 @@ int main(void)
   init_graphics();
   draw_pixel(320,320,12);
   blit();
-  int x,y;
+  // int x,y;
   while(1){
     int key = getkey();
     if(key!=-1){
