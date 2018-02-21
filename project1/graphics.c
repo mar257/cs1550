@@ -531,7 +531,7 @@ sys_getkey(void)
 	if(input.buf[0]==NULL){
 		return -1;
 	}
-	return input[r];
+	return input.buf[input.r];
 }
 
 int
