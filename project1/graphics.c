@@ -472,22 +472,22 @@ sys_blit(void)
 
 static void _black()
 {
-	//set all pixels black
+	//set all pixels black in the temp buffer
 	int i;
-	for(i=0; i<4; i++)
-	memset(screenbuffer[i], 0, framebuffersize);
+	for(i=0; i<4; i++) {
+		memset(screenbuffer[i], 0, framebuffersize);
+	}
 }
+
 int
 sys_init_graphics(void)
 {
-
 	write_regs(g_640x480x16);
 	graphics_mode = 1;
 	_black();
 	sys_blit();
 	return 0;
 }
-
 
 int
 sys_exit_graphics(void)
@@ -514,7 +514,7 @@ sys_clear_screen(void)
 }
 
 //helper method for syscall draw_pixel
-void drawpixel(int x, int y, int color){
+void drawpixel(int x, int y, int color) {
 	int pixel, bit, i;
 	pixel = (640*y)/8 + (x/8);
 	bit = x%8;
