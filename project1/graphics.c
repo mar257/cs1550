@@ -529,11 +529,14 @@ graphicsintr(int (*getc)(void))
 int
 sys_getkey(void)
 {
-	if(!(input.buf[0]==0)){
-		return -1;
+	int key;
+	acquire(&graphics_lock);
+	if ((input.r + 1) % INPUT_BUF != input.w) {
+		input.r = (input.r + 1) % INPUT_BUF;
+		key = input.buf[input.r];
 	}
-	int key = input.buf[input.r];
-	input.r++;
+	release(&graphics_lock);
+	
 	return key;
 }
 
