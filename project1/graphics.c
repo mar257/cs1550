@@ -507,8 +507,8 @@ void drawpixel(int x, int y, int color){
 	bit = x%8;
 	for(i=0; i<4; i++) {
 		char toset = screenbuffer[i][pixel];
-		char current = offscreen_buffer[p][pixel];
-		char shifted = ((color >> p) & 1) << bit;
+		char current = screenbuffer[i][pixel];
+		char shifted = ((color >> i) & 1) << bit;
 		if (shifted == 0) {
 			// Unset the bit.
 			current &= ~shifted;
