@@ -541,41 +541,61 @@ sys_draw_pixel(void)
 	return x + y + color;
 }
 
-void drawline(int x0, int y0, int x1, int y1, int color) {
-	int dx, dy, p, x, y;
+// void drawline(int x0, int y0, int x1, int y1, int color) {
+// 	int dx, dy, p, x, y;
+//
+//     dx=x1-x0;
+//     dy=y1-y0;
+//
+// 		// my code
+// 		if(dx<0){
+// 			dx = -1*dx;
+// 		}
+// 		if(dy<0){
+// 			dy = -1*dy;
+// 		}
+// 		// end my code
+// 		//
+//     x=x0;
+//     y=y0;
+//
+//     p=2*dy-dx;
+//
+//     while(x<x1)
+//     {
+//         if(p>=0)
+//         {
+//             drawpixel(x,y,color);
+//             y=y+1;
+//             p=p+2*dy-2*dx;
+//         }
+//         else
+//         {
+//             drawpixel(x,y,color);
+//             p=p+2*dy;
+//         }
+//         x=x+1;
+//     }
+// }
 
-    dx=x1-x0;
-    dy=y1-y0;
+void drawline(int x1, int y1, int x2, int y2, int color) {
+	int m_new = 2 * (y2 - y1);
+	int slope_error_new = m_new - (x2 - x1);
+	for (int x = x1, y = y1; x <= x2; x++)
+	{
+		 // cout << "(" << x << "," << y << ")\n";
+		 drawpixel(x,y,color);
+		 // Add slope to increment angle formed
+		 slope_error_new += m_new;
 
-		// my code
-		if(dx<0){
-			dx = -1*dx;
-		}
-		if(dy<0){
-			dy = -1*dy;
-		}
-		// end my code
-		// 
-    x=x0;
-    y=y0;
-
-    p=2*dy-dx;
-
-    while(x<x1)
-    {
-        if(p>=0)
-        {
-            drawpixel(x,y,color);
-            y=y+1;
-            p=p+2*dy-2*dx;
-        }
-        else
-        {
-            drawpixel(x,y,color);
-            p=p+2*dy;
-        }
-        x=x+1;
-    }
+		 // Slope error reached limit, time to
+		 // increment y and update slope error.
+		 if (slope_error_new >= 0)
+		 {
+				y++;
+				slope_error_new  -= 2 * (x2 - x1);
+		 }
+	}
 }
 
 int

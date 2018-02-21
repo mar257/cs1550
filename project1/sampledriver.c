@@ -14,7 +14,7 @@ printf(1, "clear_screen %d", clear_screen());
 //   draw_pixel(320,320+i,i);
 blit();
 
-draw_line(100,200,500,200, 14);
+// draw_line(100,200,500,200, 14);
 draw_line(500,400,100,400, 13);
 draw_line(600,200,600,500, 13);
 blit();
