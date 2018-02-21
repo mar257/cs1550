@@ -574,6 +574,6 @@ sys_draw_line(void)
 {
 	int x1, y1, x2, y2, color;
 	if((argint(0, &x1) < 0) || (argint(1, &y1) < 0) || (argint(2, &x2) < 0) || (argint(3, &y2) < 0) || (argint(4, &color) < 0)) return -1; //missing args
-	drawline(x1,y1,x2,y2);
+	drawline(x1,y1,x2,y2, color);
 	return x1 + y1 + x2 + y2 + color;
 }
