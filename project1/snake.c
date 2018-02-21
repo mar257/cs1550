@@ -6,7 +6,7 @@
 int main(void)
 {
   init_graphics();
-  draw_pixel(320,320,16);
+  draw_pixel(320,320,12);
   blit();
   while(1){
     int key = getkey();
