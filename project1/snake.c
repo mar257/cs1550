@@ -15,7 +15,7 @@ int main(void)
   struct position current = { .x=320, .y=320 };
   // int x,y;
   while(1){
-    draw_pixel(8*current.x,8*current.y,12);
+    draw_pixel(current.x,current.y,12);
     blit();
     int key = getkey();
     printf(1, "%d", key);
