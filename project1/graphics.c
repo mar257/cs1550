@@ -544,6 +544,6 @@ sys_blit(void)
 	unsigned char * fb = (unsigned char *) P2V(0xa0000);
 	for (int p = 0; p < 4; p++) {
 		set_plane(p);
-		memmove(fb, offscreen_buffer[p], BUFFER_LEN);
+		memmove(fb, screenbuffer[p], framebuffersize);
 	}
 }
