@@ -453,7 +453,7 @@ assume: chain-4 addressing already off */
 }
 
 #define framebuffersize 640*480/8
-char buffer [4][framebuffersize];
+unsigned char screenbuffer[4][framebuffersize];
 int graphics_mode = 0;
 int is_graphics(void) {
    return graphics_mode;
@@ -483,7 +483,7 @@ sys_exit_graphics(void)
 
 	write_regs(g_80x25_text);
 	write_font(g_8x16_font, 16);
-        graphics_mode = 0;
+	graphics_mode = 0;
 	return 0;
 }
 
@@ -500,12 +500,33 @@ sys_clear_screen(void)
 	return 0;
 }
 
+//helper method for syscall draw_pixel
+void drawpixel(int x, int y, int color){
+	int pixel, bit, i;
+	pixel = (640*y)/8 + (x/8);
+	bit = x%8;
+	for(i=0; i<4; i++) {
+		char toset = screenbuffer[i][pixel];
+		char current = offscreen_buffer[p][pixel];
+		char shifted = ((color >> p) & 1) << bit;
+		if (shifted == 0) {
+			// Unset the bit.
+			current &= ~shifted;
+		} else {
+			// set the bit.
+			current |= shifted;
+		}
+		offscreen_buffer[p][pixel] = current;
+	}
+}
 
 int
 sys_draw_pixel(void)
 {
 	int x, y, color;
+
 	if((argint(0, &x) < 0) || (argint(1, &y) < 0) || (argint(2, &color) < 0)) return -1; //missing args
+	drawpixel(x,y,color);
 	return x + y + color;
 }
 
@@ -513,12 +534,16 @@ int
 sys_draw_line(void)
 {
 	int x1, y1, x2, y2, color;
-  if((argint(0, &x1) < 0) || (argint(1, &y1) < 0) || (argint(2, &x2) < 0) || (argint(3, &y2) < 0) || (argint(4, &color) < 0)) return -1; //missing args
+	if((argint(0, &x1) < 0) || (argint(1, &y1) < 0) || (argint(2, &x2) < 0) || (argint(3, &y2) < 0) || (argint(4, &color) < 0)) return -1; //missing args
 	return x1 + y1 + x2 + y2 + color;
 }
 
 int
 sys_blit(void)
 {
-  return -1;
+	unsigned char * fb = (unsigned char *) P2V(0xa0000);
+	for (int p = 0; p < 4; p++) {
+		set_plane(p);
+		memmove(fb, offscreen_buffer[p], BUFFER_LEN);
+	}
 }
