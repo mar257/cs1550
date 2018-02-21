@@ -20,6 +20,7 @@ int clear_screen(void);
 int draw_pixel(int, int, int);
 int draw_line(int, int, int, int, int);
 int blit(void);
+void graphicsintr(int (*getc)(void));
 
 
 
