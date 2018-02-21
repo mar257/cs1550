@@ -8,10 +8,11 @@ int main(void)
   init_graphics();
   draw_pixel(320,320,12);
   blit();
+  int x,y;
   while(1){
     int key = getkey();
     if(key!=-1){
-      // printf(1, "%d", key);
+      printf(1, "---- %d", key);
 
       if(key=='w'){
         printf(1, "w");
