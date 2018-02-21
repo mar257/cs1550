@@ -33,6 +33,9 @@ draw_line(100,200,400,500, 13);
 blit();
 sleep(500);
 
+while(true){
+  printf(1, "%d", getkey());
+}
 // printf(1, "draw_line: %d", draw_line(1,2,3,4,5));
 // printf(1, "Test");
 
