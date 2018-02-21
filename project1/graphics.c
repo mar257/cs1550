@@ -30,19 +30,19 @@
 
 unsigned char g_80x25_text[] =
 {
-/* MISC */
+	/* MISC */
 	0x67,
-/* SEQ */
+	/* SEQ */
 	0x03, 0x00, 0x03, 0x00, 0x02,
-/* CRTC */
+	/* CRTC */
 	0x5F, 0x4F, 0x50, 0x82, 0x55, 0x81, 0xBF, 0x1F,
 	0x00, 0x4F, 0x0D, 0x0E, 0x00, 0x00, 0x00, 0x50,
 	0x9C, 0x0E, 0x8F, 0x28, 0x1F, 0x96, 0xB9, 0xA3,
 	0xFF,
-/* GC */
+	/* GC */
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x0E, 0x00,
 	0xFF,
-/* AC */
+	/* AC */
 	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x14, 0x07,
 	0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E, 0x3F,
 	0x0C, 0x00, 0x0F, 0x08, 0x00
@@ -50,19 +50,19 @@ unsigned char g_80x25_text[] =
 
 unsigned char g_640x480x16[] =
 {
-/* MISC */
+	/* MISC */
 	0xE3,
-/* SEQ */
+	/* SEQ */
 	0x03, 0x01, 0x08, 0x00, 0x06,
-/* CRTC */
+	/* CRTC */
 	0x5F, 0x4F, 0x50, 0x82, 0x54, 0x80, 0x0B, 0x3E,
 	0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	0xEA, 0x0C, 0xDF, 0x28, 0x00, 0xE7, 0x04, 0xE3,
 	0xFF,
-/* GC */
+	/* GC */
 	0x00, 0x00, 0x00, 0x00, 0x03, 0x00, 0x05, 0x0F,
 	0xFF,
-/* AC */
+	/* AC */
 	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x14, 0x07,
 	0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E, 0x3F,
 	0x01, 0x00, 0x0F, 0x00, 0x00
@@ -335,39 +335,39 @@ void write_regs(unsigned char *regs)
 {
 	unsigned i;
 
-/* write MISCELLANEOUS reg */
+	/* write MISCELLANEOUS reg */
 	outb(VGA_MISC_WRITE, *regs);
 	regs++;
-/* write SEQUENCER regs */
+	/* write SEQUENCER regs */
 	for(i = 0; i < VGA_NUM_SEQ_REGS; i++)
 	{
 		outb(VGA_SEQ_INDEX, i);
 		outb(VGA_SEQ_DATA, *regs);
 		regs++;
 	}
-/* unlock CRTC registers */
+	/* unlock CRTC registers */
 	outb(VGA_CRTC_INDEX, 0x03);
 	outb(VGA_CRTC_DATA, inb(VGA_CRTC_DATA) | 0x80);
 	outb(VGA_CRTC_INDEX, 0x11);
 	outb(VGA_CRTC_DATA, inb(VGA_CRTC_DATA) & ~0x80);
-/* make sure they remain unlocked */
+	/* make sure they remain unlocked */
 	regs[0x03] |= 0x80;
 	regs[0x11] &= ~0x80;
-/* write CRTC regs */
+	/* write CRTC regs */
 	for(i = 0; i < VGA_NUM_CRTC_REGS; i++)
 	{
 		outb(VGA_CRTC_INDEX, i);
 		outb(VGA_CRTC_DATA, *regs);
 		regs++;
 	}
-/* write GRAPHICS CONTROLLER regs */
+	/* write GRAPHICS CONTROLLER regs */
 	for(i = 0; i < VGA_NUM_GC_REGS; i++)
 	{
 		outb(VGA_GC_INDEX, i);
 		outb(VGA_GC_DATA, *regs);
 		regs++;
 	}
-/* write ATTRIBUTE CONTROLLER regs */
+	/* write ATTRIBUTE CONTROLLER regs */
 	for(i = 0; i < VGA_NUM_AC_REGS; i++)
 	{
 		(void)inb(VGA_INSTAT_READ);
@@ -375,7 +375,7 @@ void write_regs(unsigned char *regs)
 		outb(VGA_AC_WRITE, *regs);
 		regs++;
 	}
-/* lock 16-color palette and unblank display */
+	/* lock 16-color palette and unblank display */
 	(void)inb(VGA_INSTAT_READ);
 	outb(VGA_AC_INDEX, 0x20);
 }
@@ -399,15 +399,15 @@ static void write_font(unsigned char *buf, unsigned font_height)
 	unsigned char seq2, seq4, gc4, gc5, gc6;
 	unsigned i;
 
-/* save registers
-set_plane() modifies GC 4 and SEQ 2, so save them as well */
+	/* save registers
+	set_plane() modifies GC 4 and SEQ 2, so save them as well */
 	outb(VGA_SEQ_INDEX, 2);
 	seq2 = inb(VGA_SEQ_DATA);
 
 	outb(VGA_SEQ_INDEX, 4);
 	seq4 = inb(VGA_SEQ_DATA);
-/* turn off even-odd addressing (set flat addressing)
-assume: chain-4 addressing already off */
+	/* turn off even-odd addressing (set flat addressing)
+	assume: chain-4 addressing already off */
 	outb(VGA_SEQ_DATA, seq4 | 0x04);
 
 	outb(VGA_GC_INDEX, 4);
@@ -415,16 +415,16 @@ assume: chain-4 addressing already off */
 
 	outb(VGA_GC_INDEX, 5);
 	gc5 = inb(VGA_GC_DATA);
-/* turn off even-odd addressing */
+	/* turn off even-odd addressing */
 	outb(VGA_GC_DATA, gc5 & ~0x10);
 
 	outb(VGA_GC_INDEX, 6);
 	gc6 = inb(VGA_GC_DATA);
-/* turn off even-odd addressing */
+	/* turn off even-odd addressing */
 	outb(VGA_GC_DATA, gc6 & ~0x02);
-/* write font to plane P4 */
+	/* write font to plane P4 */
 	set_plane(2);
-/* write font 0 */
+	/* write font 0 */
 	for(i = 0; i < 256; i++)
 	{
 		//vmemwr(16384u * 0 + i * 32, buf, font_height);
@@ -432,7 +432,7 @@ assume: chain-4 addressing already off */
 		buf += font_height;
 	}
 #if 0
-/* write font 1 */
+	/* write font 1 */
 	for(i = 0; i < 256; i++)
 	{
 		vmemwr(16384u * 1 + i * 32, buf, font_height);
@@ -500,9 +500,31 @@ sys_exit_graphics(void)
 	return 0;
 }
 
+#define INPUT_BUF 128
+struct {
+  char buf[INPUT_BUF];
+  uint r;  // Read index
+  uint w;  // Write index
+  uint e;  // Edit index
+} input;
+
+void
+graphicsintr(int (*getc)(void))
+{
+  acquire(&graphics.lock);
+  while((c = getc()) >= 0){
+      if(c != 0 && input.e-input.r < INPUT_BUF){
+        input.buf[input.e++ % INPUT_BUF] = c;
+      }
+  }
+  release(&graphics.lock);
+}
+
 int
 sys_getkey(void)
 {
+
+
 	return -1;
 }
 
@@ -621,6 +643,7 @@ sys_draw_pixel(void)
 // 	}
 // }
 
+//Based on Wikipedia pseudo-code https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm#Method
 void drawline(int x1, int y1, int x2, int y2, int color) {
 	if(x1 == x2 && y1 == y2){
         //edge case where the 2 points are the same
