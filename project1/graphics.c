@@ -497,9 +497,6 @@ sys_init_graphics(void)
 	write_regs(g_640x480x16);
 	graphics_mode = 1;
 	initlock(&graphics_lock, "graphics");
-	input.w=1;
-	input.r=0;
-	input.e=0;
 	_black();
 	sys_blit();
 	return 0;
