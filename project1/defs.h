@@ -10,6 +10,23 @@ struct sleeplock;
 struct stat;
 struct superblock;
 
+
+//graphics.c
+int is_graphics(void);
+int init_graphics(void);
+int exit_graphics(void);
+int getkey(void);
+int clear_screen(void);
+int draw_pixel(int, int, int);
+int draw_line(int, int, int, int, int);
+int blit(void);
+
+
+
+
+
+
+
 // bio.c
 void            binit(void);
 struct buf*     bread(uint, uint);

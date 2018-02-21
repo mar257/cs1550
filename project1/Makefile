@@ -27,12 +27,13 @@ OBJS = \
 	uart.o\
 	vectors.o\
 	vm.o\
+	graphics.o\
 
 # Cross-compiling (e.g., on Mac OS X)
 # TOOLPREFIX = i386-jos-elf
 
 # Using native tools (e.g., on X86 Linux)
-#TOOLPREFIX = 
+#TOOLPREFIX =
 
 # Try to infer the correct TOOLPREFIX if not set
 ifndef TOOLPREFIX
@@ -174,13 +175,22 @@ UPROGS=\
 	_usertests\
 	_wc\
 	_zombie\
+	_init_graphics\
+	_exit_graphics\
+	_getkey\
+	_clear_screen\
+	_draw_pixel\
+	_draw_line\
+	_blit\
+	_sampledriver\
+
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
 
 -include *.d
 
-clean: 
+clean:
 	rm -f *.tex *.dvi *.idx *.aux *.log *.ind *.ilg \
 	*.o *.d *.asm *.sym vectors.S bootblock entryother \
 	initcode initcode.out kernel xv6.img fs.img kernelmemfs mkfs \

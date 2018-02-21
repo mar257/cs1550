@@ -107,8 +107,8 @@ extern int sys_init_graphics(void);
 extern int sys_exit_graphics(void);
 extern int sys_getkey(void);
 extern int sys_clear_screen(void);
-extern int sys_draw_pixel(int x, int y, int color);
-extern int sys_draw_line(int x1, int y1, int x2, int y2, int color);
+extern int sys_draw_pixel(void);
+extern int sys_draw_line(void);
 extern int sys_blit(void);
 
 
@@ -139,10 +139,10 @@ static int (*syscalls[])(void) = {
 [SYS_init_graphics]  sys_init_graphics,
 [SYS_exit_graphics]  sys_exit_graphics,
 [SYS_getkey]  sys_getkey,
-[sys_clear_screen]  sys_clear_screen,
+[SYS_clear_screen]  sys_clear_screen,
 [SYS_draw_pixel]  sys_draw_pixel,
-[SYS_draw_line]  sys_draw_line,
-[sys_blit]  sys_blit,
+[SYS_draw_line] sys_draw_line,
+[SYS_blit]  sys_blit,
 };
 
 void
