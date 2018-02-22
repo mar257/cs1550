@@ -16,6 +16,7 @@ int main(void)
   // int x,y;
   int color, i = 0,j;
   while(1) {
+    i++;
     color = i%16; //change color!
     draw_pixel(current.x,current.y,color);
     blit();
@@ -25,7 +26,7 @@ int main(void)
 
       // Key press logic
       if(key=='w') {
-        for(j=0;j<8;j++) {  //fill 8 bits per key press
+        for(j=0;j<8;j++) {  //fill 8 bits per key press makes the "game" a bit more "responsive"
           current.y = current.y-1;
           draw_pixel(current.x,current.y,color);
         }
@@ -49,7 +50,6 @@ int main(void)
         exit();
       }
     }
-    ++i;
     sleep(10);
   }
 }

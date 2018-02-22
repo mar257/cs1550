@@ -457,10 +457,10 @@ static void write_font(unsigned char *buf, unsigned font_height)
 unsigned char screenbuffer[4][framebuffersize];
 int graphics_mode = 0;
 
-//Keypress stuff - just use a single char buffer
+//Keypress stuff - just use a single char buffer for simplicity
 struct spinlock graphics_lock;
 struct {
-	char previous;
+	char previouschar;
 } input;
 
 int is_graphics(void) {
@@ -478,6 +478,7 @@ sys_blit(void)
 	return 0;
 }
 
+// helper method for clear_screen so we don't have extra syscall overhead every time we want to black it out.
 static void _black()
 {
 	//set all pixels black in the temp buffer
@@ -517,7 +518,7 @@ graphicsintr(int (*getc)(void))
   acquire(&graphics_lock);
   while((c = getc()) >= 0){
   	if(c!=0) {
-			input.previous = c;
+			input.previouschar = c;
 			break;
 		}
   }
@@ -529,8 +530,8 @@ sys_getkey(void)
 {
 	int key=-1;
 	acquire(&graphics_lock);
-	key = input.previous;	// get last key pressed
-	input.previous = -1;	// reset the previous key buffer
+	key = input.previouschar;	// get last key pressed
+	input.previouschar = -1;	// reset the previouschar key buffer
 	release(&graphics_lock);
 	return key;
 }
