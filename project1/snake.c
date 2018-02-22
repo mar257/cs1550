@@ -24,7 +24,7 @@ int main(void)
     printf(1, "%d", key);
     if(key!=-1) {
 
-      // Key press logic
+      // Key press logic - use WASD
       if(key=='w') {
         for(j=0;j<8;j++) {  //fill 8 bits per key press makes the "game" a bit more "responsive"
           current.y = current.y-1;
