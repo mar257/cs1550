@@ -457,15 +457,11 @@ static void write_font(unsigned char *buf, unsigned font_height)
 unsigned char screenbuffer[4][framebuffersize];
 int graphics_mode = 0;
 
-//Keypress stuff
+//Keypress stuff - just use a single char buffer
 struct spinlock graphics_lock;
-#define INPUT_BUF 128
-
 struct {
 	char previous;
 } input;
-
-
 
 int is_graphics(void) {
    return graphics_mode;

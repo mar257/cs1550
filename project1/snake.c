@@ -14,26 +14,42 @@ int main(void)
   blit();
   struct position current = { .x=320, .y=320 };
   // int x,y;
-  int color, i = 0;
-  while(1){
-    color = i%16;
+  int color, i = 0,j;
+  while(1) {
+    color = i%16; //change color!
     draw_pixel(current.x,current.y,color);
     blit();
     int key = getkey();
     printf(1, "%d", key);
-    if(key!=-1){
-      if(key=='w'){
-        current.y = current.y-1;
-      } else if(key=='a'){
-        current.x = current.x-1;
-      } else if(key=='s'){
-        current.y = current.y+1;
-      } else if(key=='d'){
-        current.x = current.x+1;
-      } else if(key=='q'){
+    if(key!=-1) {
+
+      // Key press logic
+      if(key=='w') {
+        for(j=0;j<8;j++) {  //fill 8 bits per key press
+          current.y = current.y-1;
+          draw_pixel(current.x,current.y,color);
+        }
+      } else if(key=='a') {
+        for(j=0;j<8;j++) {
+          current.x = current.x-1;
+          draw_pixel(current.x,current.y,color);
+        }
+      } else if(key=='s') {
+        for(j=0;j<8;j++){
+          current.y = current.y+1;
+          draw_pixel(current.x,current.y,color);
+        }
+      } else if(key=='d') {
+        for(j=0;j<8;j++){
+          current.x = current.x+1;
+          draw_pixel(current.x,current.y,color);
+        }
+      } else if(key=='q') {
+        exit_graphics();
         exit();
       }
     }
     ++i;
+    sleep(10);
   }
 }
