@@ -29,6 +29,7 @@ OBJS = \
 	vm.o\
 	graphics.o\
 
+
 # Cross-compiling (e.g., on Mac OS X)
 # TOOLPREFIX = i386-jos-elf
 
@@ -183,6 +184,7 @@ UPROGS=\
 	_draw_line\
 	_blit\
 	_sampledriver\
+	_snake\
 
 
 fs.img: mkfs README $(UPROGS)

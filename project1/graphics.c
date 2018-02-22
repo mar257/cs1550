@@ -452,12 +452,16 @@ static void write_font(unsigned char *buf, unsigned font_height)
 	outb(VGA_GC_DATA, gc6);
 }
 
+//Frame stuff
 #define framebuffersize 640*480/8
 unsigned char screenbuffer[4][framebuffersize];
 int graphics_mode = 0;
 
+//Keypress stuff - just use a single char buffer for simplicity
 struct spinlock graphics_lock;
-
+struct {
+	char previouschar;
+} input;
 
 int is_graphics(void) {
    return graphics_mode;
@@ -474,6 +478,7 @@ sys_blit(void)
 	return 0;
 }
 
+// helper method for clear_screen so we don't have extra syscall overhead every time we want to black it out.
 static void _black()
 {
 	//set all pixels black in the temp buffer
@@ -488,6 +493,7 @@ sys_init_graphics(void)
 {
 	write_regs(g_640x480x16);
 	graphics_mode = 1;
+	initlock(&graphics_lock, "graphics");
 	_black();
 	sys_blit();
 	return 0;
@@ -504,23 +510,17 @@ sys_exit_graphics(void)
 	return 0;
 }
 
-#define INPUT_BUF 128
-struct {
-  char buf[INPUT_BUF];
-  uint r;  // Read index
-  uint w;  // Write index
-  uint e;  // Edit index
-} input;
 
 void
 graphicsintr(int (*getc)(void))
 {
-	int c;
+	char c;
   acquire(&graphics_lock);
   while((c = getc()) >= 0){
-      if(c != 0 && input.e-input.r < INPUT_BUF){
-        input.buf[input.e++ % INPUT_BUF] = c;
-      }
+  	if(c!=0) {
+			input.previouschar = c;
+			break;
+		}
   }
   release(&graphics_lock);
 }
@@ -528,9 +528,12 @@ graphicsintr(int (*getc)(void))
 int
 sys_getkey(void)
 {
-
-
-	return -1;
+	int key=-1;
+	acquire(&graphics_lock);
+	key = input.previouschar;	// get last key pressed
+	input.previouschar = -1;	// reset the previouschar key buffer
+	release(&graphics_lock);
+	return key;
 }
 
 int
@@ -567,86 +570,6 @@ sys_draw_pixel(void)
 	drawpixel(x,y,color);
 	return x + y + color;
 }
-
-// void drawline(int x0, int y0, int x1, int y1, int color) {
-// 	int dx, dy, p, x, y;
-//
-//     dx=x1-x0;
-//     dy=y1-y0;
-//
-// 		// my code
-// 		if(dx<0){
-// 			dx = -1*dx;
-// 		}
-// 		if(dy<0){
-// 			dy = -1*dy;
-// 		}
-// 		// end my code
-// 		//
-//     x=x0;
-//     y=y0;
-//
-//     p=2*dy-dx;
-//
-//     while(x<x1)
-//     {
-//         if(p>=0)
-//         {
-//             drawpixel(x,y,color);
-//             y=y+1;
-//             p=p+2*dy-2*dx;
-//         }
-//         else
-//         {
-//             drawpixel(x,y,color);
-//             p=p+2*dy;
-//         }
-//         x=x+1;
-//     }
-// }
-
-// void drawline(int x0, int y0, int x1, int y1, int color) {
-// 	int x, y, dx, dy, pixel, temp;
-//
-// 	dx = x0 - x1;
-// 	dy = y0 - y1;
-//
-// 	if(dx<0){
-// 		dx*=-1;
-// 	}
-// 	if(dy<0){
-// 		dy*=-1;
-// 	}
-//
-// 	pixel = 2 * dy - dx;
-// 	if(x0 > x1)
-// 	{
-// 		x = x1;
-// 		y = y1;
-// 		temp = x0;
-// 	}
-// 	else
-// 	{
-// 		x = x0;
-// 		y = y0;
-// 		temp = x1;
-// 	}
-// 	drawpixel(x, y, color);
-// 	while(x < temp)
-// 	{
-// 		x++;
-// 		if(pixel < 0)
-// 		{
-// 			pixel = pixel + 2 * dy;
-// 		}
-// 		else
-// 		{
-// 			y++;
-// 			pixel = pixel + 2 * (dy - dx);
-// 		}
-// 		drawpixel(x, y, color);
-// 	}
-// }
 
 //Based on Wikipedia pseudo-code https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm#Method
 void drawline(int x1, int y1, int x2, int y2, int color) {

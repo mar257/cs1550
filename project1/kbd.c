@@ -46,5 +46,9 @@ kbdgetc(void)
 void
 kbdintr(void)
 {
-  consoleintr(kbdgetc);
+  if (is_graphics()) {
+    graphicsintr(kbdgetc);
+  } else {
+    consoleintr(kbdgetc);
+  }
 }
