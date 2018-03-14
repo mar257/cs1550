@@ -1,0 +1,6 @@
+
+
+- Play snake with WASD
+- L/R pixels fill in weird for some reason.
+- Therefore, diagonal lines fill in weird in draw_line, probably a bug somewhere.
+- Thanks for the submission instructions and grading breakdown 50 minutes before the project deadline and less than 12 hours before our midterm exam.

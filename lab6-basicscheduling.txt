@@ -1,0 +1,132 @@
+Max Reno
+CS 1550 Lab6
+
+Part 1 - Basic CPU Scheduling
+
+1.
+----------First in First Out with 3 random jobs----------
+  HW-Scheduler $ ./scheduler.py -p FIFO -j 3 -s 200 -c
+    Job 0 ( length = 1 )
+    Job 1 ( length = 3 )
+    Job 2 ( length = 8 )
+
+    Execution trace:
+    [ time   0 ] Run job 0 for 1.00 secs ( DONE at 1.00 )
+    [ time   1 ] Run job 1 for 3.00 secs ( DONE at 4.00 )
+    [ time   4 ] Run job 2 for 8.00 secs ( DONE at 12.00 )
+
+    Final statistics:
+    Job   0 -- Response: 0.00  Turnaround 1.00  Wait 0.00
+    Job   1 -- Response: 1.00  Turnaround 4.00  Wait 1.00
+    Job   2 -- Response: 4.00  Turnaround 12.00  Wait 4.00
+
+    Average -- Response: 1.67  Turnaround 5.67  Wait 1.67
+
+
+----------Shortest Job First with 3 random jobs----------
+  HW-Scheduler $ ./scheduler.py -p SJF -j 3 -s 200 -c
+    Job 0 ( length = 1 )
+    Job 1 ( length = 3 )
+    Job 2 ( length = 8 )
+
+    Execution trace:
+    [ time   0 ] Run job 0 for 1.00 secs ( DONE at 1.00 )
+    [ time   1 ] Run job 1 for 3.00 secs ( DONE at 4.00 )
+    [ time   4 ] Run job 2 for 8.00 secs ( DONE at 12.00 )
+
+    Final statistics:
+    Job   0 -- Response: 0.00  Turnaround 1.00  Wait 0.00
+    Job   1 -- Response: 1.00  Turnaround 4.00  Wait 1.00
+    Job   2 -- Response: 4.00  Turnaround 12.00  Wait 4.00
+
+    Average -- Response: 1.67  Turnaround 5.67  Wait 1.67
+
+
+
+2.
+----------First in First Out with jobs of length 100, 200, 300----------
+  HW-Scheduler $ ./scheduler.py -p FIFO -l 100,200,300 -c
+    Job 0 ( length = 100.0 )
+    Job 1 ( length = 200.0 )
+    Job 2 ( length = 300.0 )
+
+    Execution trace:
+    [ time   0 ] Run job 0 for 100.00 secs ( DONE at 100.00 )
+    [ time 100 ] Run job 1 for 200.00 secs ( DONE at 300.00 )
+    [ time 300 ] Run job 2 for 300.00 secs ( DONE at 600.00 )
+
+    Final statistics:
+    Job   0 -- Response: 0.00  Turnaround 100.00  Wait 0.00
+    Job   1 -- Response: 100.00  Turnaround 300.00  Wait 100.00
+    Job   2 -- Response: 300.00  Turnaround 600.00  Wait 300.00
+
+    Average -- Response: 133.33  Turnaround 333.33  Wait 133.33
+
+----------Shortest Job First with jobs of length 100, 200, 300----------
+  HW-Scheduler $ ./scheduler.py -p SJF -l 100,200,300 -c
+    Job 0 ( length = 100.0 )
+    Job 1 ( length = 200.0 )
+    Job 2 ( length = 300.0 )
+
+    Execution trace:
+    [ time   0 ] Run job 0 for 100.00 secs ( DONE at 100.00 )
+    [ time 100 ] Run job 1 for 200.00 secs ( DONE at 300.00 )
+    [ time 300 ] Run job 2 for 300.00 secs ( DONE at 600.00 )
+
+    Final statistics:
+    Job   0 -- Response: 0.00  Turnaround 100.00  Wait 0.00
+    Job   1 -- Response: 100.00  Turnaround 300.00  Wait 100.00
+    Job   2 -- Response: 300.00  Turnaround 600.00  Wait 300.00
+
+    Average -- Response: 133.33  Turnaround 333.33  Wait 133.33
+
+
+
+
+3.
+----------RR with quantum 1 and 3 random jobs----------
+  HW-Scheduler $ ./scheduler.py -p RR -j 3 -q 1 -s 100 -c
+
+    Job 0 ( length = 2 )
+    Job 1 ( length = 5 )
+    Job 2 ( length = 8 )
+
+    Execution trace:
+    [ time   0 ] Run job   0 for 1.00 secs
+    [ time   1 ] Run job   1 for 1.00 secs
+    [ time   2 ] Run job   2 for 1.00 secs
+    [ time   3 ] Run job   0 for 1.00 secs ( DONE at 4.00 )
+    [ time   4 ] Run job   1 for 1.00 secs
+    [ time   5 ] Run job   2 for 1.00 secs
+    [ time   6 ] Run job   1 for 1.00 secs
+    [ time   7 ] Run job   2 for 1.00 secs
+    [ time   8 ] Run job   1 for 1.00 secs
+    [ time   9 ] Run job   2 for 1.00 secs
+    [ time  10 ] Run job   1 for 1.00 secs ( DONE at 11.00 )
+    [ time  11 ] Run job   2 for 1.00 secs
+    [ time  12 ] Run job   2 for 1.00 secs
+    [ time  13 ] Run job   2 for 1.00 secs
+    [ time  14 ] Run job   2 for 1.00 secs ( DONE at 15.00 )
+
+    Final statistics:
+    Job   0 -- Response: 0.00  Turnaround 4.00  Wait 2.00
+    Job   1 -- Response: 1.00  Turnaround 11.00  Wait 6.00
+    Job   2 -- Response: 2.00  Turnaround 15.00  Wait 7.00
+
+    Average -- Response: 1.00  Turnaround 10.00  Wait 5.00
+
+
+----------RR with quantum 1 and jobs of 100, 200, and 300 length----------
+  HW-Scheduler $ ./scheduler.py -p RR -l 100,200,300 -q 1 -c
+    Job 0 ( length = 100.0 )
+    Job 1 ( length = 200.0 )
+    Job 2 ( length = 300.0 )
+
+    {excluded execution trace due to length}
+
+    Final statistics:
+    Job   0 -- Response: 0.00  Turnaround 298.00  Wait 198.00
+    Job   1 -- Response: 1.00  Turnaround 499.00  Wait 299.00
+    Job   2 -- Response: 2.00  Turnaround 600.00  Wait 300.00
+
+    Average -- Response: 1.00  Turnaround 465.67  Wait 265.67

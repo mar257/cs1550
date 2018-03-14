@@ -1,0 +1,82 @@
+Max Reno
+CS 1550 Lab6
+
+Part 2 - Multi-Level Feedback Queue
+
+1.
+----------MLFQ with 2 queues and 2 random jobs----------
+  HW-MLFQ $ ./mlfq.py -j 2 -n 2 -m 13 -M 0 -c
+
+    Job List:
+      Job  0: startTime   0 - runTime  11 - ioFreq   0
+      Job  1: startTime   0 - runTime   6 - ioFreq   0
+
+
+    Execution Trace:
+
+    [ time 0 ] JOB BEGINS by JOB 0
+    [ time 0 ] JOB BEGINS by JOB 1
+    [ time 0 ] Run JOB 0 at PRIORITY 1 [ TICKSLEFT 9 RUNTIME 11 TIMELEFT 10 ]
+    [ time 1 ] Run JOB 0 at PRIORITY 1 [ TICKSLEFT 8 RUNTIME 11 TIMELEFT 9 ]
+    [ time 2 ] Run JOB 0 at PRIORITY 1 [ TICKSLEFT 7 RUNTIME 11 TIMELEFT 8 ]
+    [ time 3 ] Run JOB 0 at PRIORITY 1 [ TICKSLEFT 6 RUNTIME 11 TIMELEFT 7 ]
+    [ time 4 ] Run JOB 0 at PRIORITY 1 [ TICKSLEFT 5 RUNTIME 11 TIMELEFT 6 ]
+    [ time 5 ] Run JOB 0 at PRIORITY 1 [ TICKSLEFT 4 RUNTIME 11 TIMELEFT 5 ]
+    [ time 6 ] Run JOB 0 at PRIORITY 1 [ TICKSLEFT 3 RUNTIME 11 TIMELEFT 4 ]
+    [ time 7 ] Run JOB 0 at PRIORITY 1 [ TICKSLEFT 2 RUNTIME 11 TIMELEFT 3 ]
+    [ time 8 ] Run JOB 0 at PRIORITY 1 [ TICKSLEFT 1 RUNTIME 11 TIMELEFT 2 ]
+    [ time 9 ] Run JOB 0 at PRIORITY 1 [ TICKSLEFT 0 RUNTIME 11 TIMELEFT 1 ]
+    [ time 10 ] Run JOB 1 at PRIORITY 1 [ TICKSLEFT 9 RUNTIME 6 TIMELEFT 5 ]
+    [ time 11 ] Run JOB 1 at PRIORITY 1 [ TICKSLEFT 8 RUNTIME 6 TIMELEFT 4 ]
+    [ time 12 ] Run JOB 1 at PRIORITY 1 [ TICKSLEFT 7 RUNTIME 6 TIMELEFT 3 ]
+    [ time 13 ] Run JOB 1 at PRIORITY 1 [ TICKSLEFT 6 RUNTIME 6 TIMELEFT 2 ]
+    [ time 14 ] Run JOB 1 at PRIORITY 1 [ TICKSLEFT 5 RUNTIME 6 TIMELEFT 1 ]
+    [ time 15 ] Run JOB 1 at PRIORITY 1 [ TICKSLEFT 4 RUNTIME 6 TIMELEFT 0 ]
+    [ time 16 ] FINISHED JOB 1
+    [ time 16 ] Run JOB 0 at PRIORITY 0 [ TICKSLEFT 9 RUNTIME 11 TIMELEFT 0 ]
+    [ time 17 ] FINISHED JOB 0
+
+    Final statistics:
+      Job  0: startTime   0 - response   0 - turnaround  17
+      Job  1: startTime   0 - response  10 - turnaround  16
+
+      Avg  1: startTime n/a - response 5.00 - turnaround 16.50
+
+
+----------MLFQ with 2 queues and 2 random jobs one more time----------
+  HW-MLFQ $ ./mlfq.py -j 2 -n 2 -m 13 -M 0 -s 100 -c
+
+    Job List:
+      Job  0: startTime   0 - runTime   2 - ioFreq   0
+      Job  1: startTime   0 - runTime  10 - ioFreq   0
+
+
+    Execution Trace:
+
+    [ time 0 ] JOB BEGINS by JOB 0
+    [ time 0 ] JOB BEGINS by JOB 1
+    [ time 0 ] Run JOB 0 at PRIORITY 1 [ TICKSLEFT 9 RUNTIME 2 TIMELEFT 1 ]
+    [ time 1 ] Run JOB 0 at PRIORITY 1 [ TICKSLEFT 8 RUNTIME 2 TIMELEFT 0 ]
+    [ time 2 ] FINISHED JOB 0
+    [ time 2 ] Run JOB 1 at PRIORITY 1 [ TICKSLEFT 9 RUNTIME 10 TIMELEFT 9 ]
+    [ time 3 ] Run JOB 1 at PRIORITY 1 [ TICKSLEFT 8 RUNTIME 10 TIMELEFT 8 ]
+    [ time 4 ] Run JOB 1 at PRIORITY 1 [ TICKSLEFT 7 RUNTIME 10 TIMELEFT 7 ]
+    [ time 5 ] Run JOB 1 at PRIORITY 1 [ TICKSLEFT 6 RUNTIME 10 TIMELEFT 6 ]
+    [ time 6 ] Run JOB 1 at PRIORITY 1 [ TICKSLEFT 5 RUNTIME 10 TIMELEFT 5 ]
+    [ time 7 ] Run JOB 1 at PRIORITY 1 [ TICKSLEFT 4 RUNTIME 10 TIMELEFT 4 ]
+    [ time 8 ] Run JOB 1 at PRIORITY 1 [ TICKSLEFT 3 RUNTIME 10 TIMELEFT 3 ]
+    [ time 9 ] Run JOB 1 at PRIORITY 1 [ TICKSLEFT 2 RUNTIME 10 TIMELEFT 2 ]
+    [ time 10 ] Run JOB 1 at PRIORITY 1 [ TICKSLEFT 1 RUNTIME 10 TIMELEFT 1 ]
+    [ time 11 ] Run JOB 1 at PRIORITY 1 [ TICKSLEFT 0 RUNTIME 10 TIMELEFT 0 ]
+    [ time 12 ] FINISHED JOB 1
+
+    Final statistics:
+      Job  0: startTime   0 - response   0 - turnaround   2
+      Job  1: startTime   0 - response   2 - turnaround  12
+
+      Avg  1: startTime n/a - response 1.00 - turnaround 7.00
+
+
+2.
+
+3. To make this behave just like round robin, we would make a single queue with one time slice that every job would be in and execute in.
