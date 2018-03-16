@@ -397,7 +397,7 @@ rand()
 void
 scheduler(void)
 {
-  int random, i=0;
+  int random;
   struct proc *p, *selected;
   struct cpu *c = mycpu();
   c->proc = 0;
