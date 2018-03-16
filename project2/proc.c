@@ -321,6 +321,45 @@ wait(void)
   }
 }
 
+// Array of processes to store ticket information
+#define MAX_TIX = 100*NPROC; // Max tickets is arbitrarily high
+#define MAX_PROC_TIX = 100; // Max tickets per process is arbitrarily higher than necessary
+int tix_count=0;  // Number of working tickets in lottery
+struct proc* tickets[MAX_TICKETS];
+
+// Helper methods to manage tickets/fill holes in array when removed
+void
+addTix(int num, struct proc* process)
+{
+  // Append specified number of tickets for a process to end of tix array
+  int i;
+  for(i=0; i<num; i++){
+    tickets[tix_count]=process;
+    count++;
+  }
+}
+
+void
+removeTix(struct proc* process)
+{
+  int i;
+  for(i=0; i<tix_count; i++){
+
+    // If process has last ticket, just remove and decrement ticket counter
+    if(tickets[tix_count-1]==process){
+      tickets[tix_count-1]=NULL;
+      tix_count--;
+    }
+
+    // Swap 'empty' ticket space with last space process in array, decrement ticket counter
+    if(tickets[i]==process){
+      tickets[i]=tickets[tix_count-1];
+      tickets[tix_count-1]=NULL;
+      tix_count--;
+    }
+  }
+}
+
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
