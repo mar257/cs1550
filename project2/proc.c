@@ -417,6 +417,25 @@ scheduler(void)
   }
 }
 
+int
+getpinfo(struct pstat* pst)
+{
+  // Take process info and add to PSTAT
+  // TODO: How do I know if an entry in the table is inuse?
+  // TODO: Implement ticks.
+  acquire(&ptable.lock);
+  for (int i = 0; i < NPROC; ++i) {
+    struct proc process = ptable.proc[i];
+    pst->inuse[i] = 1;
+    pst->tickets[i] = process.tickets;
+    pst->pid[i] = process.pid;
+    pst->ticks[i] = 0;
+  }
+  release(&ptable.lock);
+  return 0;
+}
+
+
 // Enter scheduler.  Must hold only ptable.lock
 // and have changed proc->state. Saves and restores
 // intena because intena is a property of this
