@@ -393,6 +393,8 @@ rand()
 //  - swtch to start running that process
 //  - eventually that process transfers control
 //      via swtch back to the scheduler.
+//
+// ---Tried to compact this code more so that only one copy of switch methods needed, but kept getting errors, split it up so more simple
 void
 scheduler(void)
 {
@@ -405,39 +407,53 @@ scheduler(void)
     // Enable interrupts on this processor.
     sti();
 
-    // Loop over process table looking for process to run.
-    acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    // If no tickets, schedule normally.
+    if(tix_count <= 0){
+      acquire(&ptable.lock);
+      for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+        if(p->state != RUNNABLE) continue;
 
-      // If working tickets > 0, then we can use lottery system, otherwise, normal scheduler.
-      if(tix_count>0){
-        while(1){
-          if(tix_count!=0){
-            random = rand() % tix_count;
-            p = tickets[random];
-            if(p->state == RUNNABLE) break;
-          }
+        // Switch to chosen process.  It is the process's job
+        // to release ptable.lock and then reacquire it
+        // before jumping back to us.
+        c->proc = p;
+        switchuvm(p);
+        p->ticks++;
+        p->state = RUNNING;
+        swtch(&(c->scheduler), p->context);
+        switchkvm();
+        c->proc = 0;
+        release(&ptable.lock);
+      }
+
+      // Lottery scheduler if there are tickets.
+    } else {
+      acquire(&ptable.lock);
+      for(;;) {
+        if(tix_count!=0){
+          random = rand() % tix_count;
+          p = tickets[random];
+          if(p->state == RUNNABLE)
+          break;
         }
       }
-      if(p->state != RUNNABLE) continue;
-
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
       c->proc = p;
       switchuvm(p);
       p->ticks++;
       p->state = RUNNING;
       swtch(&(c->scheduler), p->context);
       switchkvm();
-
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
       c->proc = 0;
+      release(&ptable.lock);
     }
-    release(&ptable.lock);
   }
+
+  // Process is done running for now.
+  // It should have changed its p->state before coming back.
 }
+
+
+
 
 int
 getpinfo(struct pstat* pst)
