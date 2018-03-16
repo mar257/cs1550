@@ -158,7 +158,7 @@ userinit(void)
 
   p->ntix = 1;
   p->ticks = 0;
-  addTix(p->tickets,p);
+  addTix(1,p);
 
   // this assignment to p->state lets other cores
   // run this process. the acquire forces the above
