@@ -409,16 +409,17 @@ scheduler(void)
     acquire(&ptable.lock);
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
 
-    // If working tickets > 0, then we can use lottery system, otherwise, normal scheduler.
-    if(tix_count>0){
-      while(1){
-        if(tix_count!=0){
-          random = rand() % tix_count;
-          p = tickets[random];
-          if(p->state == RUNNABLE) break;
+      // If working tickets > 0, then we can use lottery system, otherwise, normal scheduler.
+      if(tix_count>0){
+        while(1){
+          if(tix_count!=0){
+            random = rand() % tix_count;
+            p = tickets[random];
+            if(p->state == RUNNABLE) break;
+          }
         }
       }
-    }
+      if(p->state != RUNNABLE) continue;
 
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
