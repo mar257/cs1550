@@ -427,7 +427,7 @@ getpinfo(struct pstat* pst)
   for (int i = 0; i < NPROC; ++i) {
     struct proc process = ptable.proc[i];
     pst->inuse[i] = 1;
-    pst->tickets[i] = process.tickets;
+    pst->tickets[i] = process.ntix;
     pst->pid[i] = process.pid;
     pst->ticks[i] = 0;
   }
