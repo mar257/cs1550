@@ -412,7 +412,7 @@ scheduler(void)
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
 
       // If working tickets > 0, then we can use lottery system, otherwise, normal scheduler.
-      if(tix_count==0){
+      if(tix_count!=0){
         random = rand() % tix_count;
         selected = tickets[random];
         p = selected;
