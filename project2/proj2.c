@@ -84,7 +84,7 @@ int main() {
                         break;
                 }
             }
-            printf(1, "%d,\t%d,\t%d\n", p1, p2+rand()%50, p3+rand()%100);
+            printf(1, "%d,\t%d,\t%d\n", p1, p2+rand()%40, p3+rand()%200);
         }
         exit();
     }
