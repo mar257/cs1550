@@ -423,8 +423,8 @@ scheduler(void)
         swtch(&(c->scheduler), p->context);
         switchkvm();
         c->proc = 0;
-        release(&ptable.lock);
       }
+      release(&ptable.lock);
 
       // Lottery scheduler if there are tickets.
     } else {
