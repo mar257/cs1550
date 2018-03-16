@@ -325,7 +325,7 @@ wait(void)
 #define MAX_TIX = 100*NPROC; // Max tickets is arbitrarily high
 #define MAX_PROC_TIX = 100; // Max tickets per process is arbitrarily higher than necessary
 int tix_count=0;  // Number of working tickets in lottery
-struct proc* tickets[MAX_TICKETS];
+struct proc* tickets[MAX_TIX];
 
 // Helper methods to manage tickets/fill holes in array when removed
 void
@@ -347,14 +347,14 @@ removeTix(struct proc* process)
 
     // If process has last ticket, just remove and decrement ticket counter
     if(tickets[tix_count-1]==process){
-      tickets[tix_count-1]=NULL;
+      tickets[tix_count-1]=0;
       tix_count--;
     }
 
     // Swap 'empty' ticket space with last space process in array, decrement ticket counter
     if(tickets[i]==process){
       tickets[i]=tickets[tix_count-1];
-      tickets[tix_count-1]=NULL;
+      tickets[tix_count-1]=0;
       tix_count--;
     }
   }
