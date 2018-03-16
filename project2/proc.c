@@ -7,8 +7,8 @@
 #include "proc.h"
 #include "spinlock.h"
 
-void addTix(int, proc*);
-void removeTix(proc*);
+void addTix(int num, struct proc *process);
+void removeTix(struct proc *process);
 
 struct {
   struct spinlock lock;
