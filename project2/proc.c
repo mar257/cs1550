@@ -158,7 +158,7 @@ userinit(void)
 
   p->ntix = 1;
   p->ticks = 0;
-  addTix(1,p);
+  addTix(p->tickets,p);
 
   // this assignment to p->state lets other cores
   // run this process. the acquire forces the above
@@ -427,7 +427,7 @@ scheduler(void)
       release(&ptable.lock);
 
     } else {
-      for(;;){
+      while(1){
         if(tix_count!=0){
           random = rand() % tix_count;
           p = tickets[random];
