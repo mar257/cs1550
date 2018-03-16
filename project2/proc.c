@@ -425,10 +425,10 @@ getpinfo(struct pstat* pst)
   // TODO: Implement ticks.
   acquire(&ptable.lock);
   for (int i = 0; i < NPROC; ++i) {
-    struct proc process = ptable.proc[i];
+    struct proc *process = ptable.proc[i];
     // pst->inuse[i] = 1;
-    ps->inuse[i] = process.state != UNUSED;
-    // if(p.state!=UNUSED) ps->inuse[i]=
+    pst->inuse[i] = process.state != UNUSED;
+    // if(process.state!=UNUSED) pst->inuse[i]=
     pst->tickets[i] = process.ntix;
     pst->pid[i] = process.pid;
     pst->ticks[i] = 0;
