@@ -7,6 +7,9 @@
 #include "proc.h"
 #include "spinlock.h"
 
+void addTix(int, proc*);
+void removeTix(proc*);
+
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -32,6 +35,7 @@ void
 pinit(void)
 {
   initlock(&ptable.lock, "ptable");
+
 }
 
 // Must be called with interrupts disabled
@@ -151,6 +155,9 @@ userinit(void)
   safestrcpy(p->name, "initcode", sizeof(p->name));
   p->cwd = namei("/");
 
+  p->ntix = 1;
+  addTix(1,p);
+
   // this assignment to p->state lets other cores
   // run this process. the acquire forces the above
   // writes to be visible, and the lock is also needed
@@ -208,7 +215,10 @@ fork(void)
   np->sz = curproc->sz;
   np->parent = curproc;
   *np->tf = *curproc->tf;
+
+  //give child same # of tix as parent
   np->ntix = curproc->ntix;
+  addTix(np->ntix, np);
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
@@ -270,6 +280,9 @@ exit(void)
         wakeup1(initproc);
     }
   }
+
+  // Remove all tix from lottery for the process.
+  removeTix(curproc);
 
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
@@ -335,7 +348,7 @@ addTix(int num, struct proc* process)
   int i;
   for(i=0; i<num; i++){
     tickets[tix_count]=process;
-    count++;
+    tix_count++;
   }
 }
 
@@ -579,5 +592,9 @@ procdump(void)
         cprintf(" %p", pc[i]);
     }
     cprintf("\n");
+    cprintf("Number of tickets issued: %d\n", noTickets);
+    for (int i = 0; i < noTickets; ++i) {
+      cprintf("ticketno: %d\tpid: %d\n", i, tickets[i]->pid);
+    }
   }
 }
