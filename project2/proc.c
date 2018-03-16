@@ -442,7 +442,7 @@ scheduler(void)
       switchkvm();
       c->proc = 0;
       release(&ptable.lock);
-    }g
+    }
   }
 }
 
