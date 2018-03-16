@@ -434,9 +434,9 @@ scheduler(void)
       }
       release(&ptable.lock);
     } else {
-      while (1) {
-        int n = rand() % tix_count;
-        p = tickets[n];
+      for(;;){
+        int random = rand() % tix_count;
+        p = tickets[random];
         if (p->state == RUNNABLE) break;
       }
 
