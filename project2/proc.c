@@ -592,8 +592,8 @@ procdump(void)
         cprintf(" %p", pc[i]);
     }
     cprintf("\n");
-    cprintf("Number of tickets issued: %d\n", noTickets);
-    for (int i = 0; i < noTickets; ++i) {
+    cprintf("Number of tickets issued: %d\n", tix_count);
+    for (int i = 0; i < tix_count; ++i) {
       cprintf("ticketno: %d\tpid: %d\n", i, tickets[i]->pid);
     }
   }
