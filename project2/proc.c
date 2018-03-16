@@ -457,15 +457,6 @@ getpinfo(struct pstat* pst)
   return 0;
 }
 
-// pseudo random number 'generator'
-unsigned long randstate = 1;
-unsigned int
-rand()
-{
-  randstate = randstate * 1664525 + 1013904223;
-  return randstate;
-}
-
 // Enter scheduler.  Must hold only ptable.lock
 // and have changed proc->state. Saves and restores
 // intena because intena is a property of this
