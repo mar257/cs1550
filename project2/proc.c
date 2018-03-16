@@ -395,10 +395,10 @@ rand()
 //      via swtch back to the scheduler.
 //
 // ---Tried to compact this code more so that only one copy of switch methods needed, but kept getting errors, split it up so more simple
+int random;
 void
 scheduler(void)
 {
-  int random;
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
@@ -429,7 +429,7 @@ scheduler(void)
       // Lottery scheduler if there are tickets.
     } else {
       acquire(&ptable.lock);
-      for(;;) {
+      while(1) {
         if(tix_count!=0){
           random = rand() % tix_count;
           p = tickets[random];
