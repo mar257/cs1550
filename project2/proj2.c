@@ -3,8 +3,8 @@
 #include "pstat.h"
 
 int main() {
-  struct pstat pst;
-  int i;
+  // struct pstat pst;
+  // int i;
   settickets(10);
   if (fork() == 0) {
     settickets(20);
