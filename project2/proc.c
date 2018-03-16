@@ -431,7 +431,7 @@ scheduler(void)
         if(tix_count!=0){
           random = rand() % tix_count;
           p = tickets[random];
-          if(p->state==running) break;
+          if(p->state==RUNNING) break;
         }
       }
       acquire(&ptable.lock);
@@ -442,7 +442,7 @@ scheduler(void)
       switchkvm();
       c->proc = 0;
       release(&ptable.lock);
-    }
+    }g
   }
 }
 
