@@ -340,6 +340,7 @@ wait(void)
 // Array of processes to store ticket information
 #define MAX_TIX 100*NPROC // Max tickets is arbitrarily high
 #define MAX_PROC_TIX 100 // Max tickets per process is arbitrarily higher than necessary
+#define MAX_PROC 64
 int tix_count=0;  // Number of working tickets in lottery
 struct proc* tickets[MAX_TIX];
 
