@@ -11,8 +11,8 @@ int main() {
     printf(1, "%d\t%d\t%d\t%d\t%d\n", i,
     pst.inuse[i],
     pst.tickets[i],
-    pst.ticks[i]
-    pst.pid[i],
+    pst.ticks[i],
+    pst.pid[i]
   );
 }
 exit();
