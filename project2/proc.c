@@ -157,6 +157,7 @@ userinit(void)
   p->cwd = namei("/");
 
   p->ntix = 1;
+  p->ticks = 0;
   addTix(1,p);
 
   // this assignment to p->state lets other cores
@@ -217,8 +218,9 @@ fork(void)
   np->parent = curproc;
   *np->tf = *curproc->tf;
 
-  //give child same # of tix as parent
+  //give child same # of tix as parent, ticks=0
   np->ntix = curproc->ntix;
+  np->ticks = 0;
   addTix(np->ntix, np);
 
   // Clear %eax so that fork returns 0 in the child.
@@ -404,8 +406,8 @@ scheduler(void)
       // before jumping back to us.
       c->proc = p;
       switchuvm(p);
+      p->ticks++;
       p->state = RUNNING;
-
       swtch(&(c->scheduler), p->context);
       switchkvm();
 
@@ -422,7 +424,6 @@ int
 getpinfo(struct pstat* pst)
 {
   // Take process info and add to PSTAT
-  // TODO: How do I know if an entry in the table is inuse?
   // TODO: Implement ticks.
   int i;
   acquire(&ptable.lock);
@@ -433,12 +434,20 @@ getpinfo(struct pstat* pst)
     // if(process.state!=UNUSED) pst->inuse[i]=
     pst->tickets[i] = process.ntix;
     pst->pid[i] = process.pid;
-    pst->ticks[i] = 0;
+    pst->ticks[i] = process.ticks;
   }
   release(&ptable.lock);
   return 0;
 }
 
+// pseudo random number 'generator'
+unsigned long randstate = 1;
+unsigned int
+rand()
+{
+  randstate = randstate * 1664525 + 1013904223;
+  return randstate;
+}
 
 // Enter scheduler.  Must hold only ptable.lock
 // and have changed proc->state. Saves and restores
