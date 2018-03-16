@@ -37,7 +37,7 @@
 #define P1_TICKETS 2
 #define P2_TICKETS 4
 #define P3_TICKETS 6
-#define DATA_SIZE 10
+#define DATA_SIZE 20
 #define STEP_SIZE 100
 
 // Spawns two child processes so that the three
