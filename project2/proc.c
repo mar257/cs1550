@@ -408,33 +408,34 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    // for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(tix_count==0) continue;  // avoid div by 0
-    random = rand() % tix_count;
-    selected = tickets[random];
-    p = selected;
-    if(p->state != RUNNABLE)
-    continue;
 
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
 
+      // If working tickets > 0, then we can use lottery system, otherwise, normal scheduler.
+      if(tix_count==0){
+        random = rand() % tix_count;
+        selected = tickets[random];
+        p = selected;
+      }
 
-    // Switch to chosen process.  It is the process's job
-    // to release ptable.lock and then reacquire it
-    // before jumping back to us.
-    c->proc = p;
-    switchuvm(p);
-    p->ticks++;
-    p->state = RUNNING;
-    swtch(&(c->scheduler), p->context);
-    switchkvm();
+      if(p->state != RUNNABLE) continue;
 
-    // Process is done running for now.
-    // It should have changed its p->state before coming back.
-    c->proc = 0;
+      // Switch to chosen process.  It is the process's job
+      // to release ptable.lock and then reacquire it
+      // before jumping back to us.
+      c->proc = p;
+      switchuvm(p);
+      p->ticks++;
+      p->state = RUNNING;
+      swtch(&(c->scheduler), p->context);
+      switchkvm();
 
-    release(&ptable.lock);
+      // Process is done running for now.
+      // It should have changed its p->state before coming back.
+      c->proc = 0;
 
-  // }
+      release(&ptable.lock);
+  }
 }
 
 int
