@@ -406,11 +406,16 @@ scheduler(void)
   for(;;){
     // Enable interrupts on this processor.
     sti();
-    if(tix_count <= 0) {
+
+
+    if (tix_count == 0) {
+      // Apparently, on boot, no tickets have been assigned.
+      // Fall back to the original algorithm.
       // Loop over process table looking for process to run.
       acquire(&ptable.lock);
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-        if(p->state != RUNNABLE) continue;
+        if(p->state != RUNNABLE)
+          continue;
 
         // Switch to chosen process.  It is the process's job
         // to release ptable.lock and then reacquire it
@@ -418,28 +423,33 @@ scheduler(void)
         c->proc = p;
         switchuvm(p);
         p->state = RUNNING;
+        p->ticks++;
+
         swtch(&(c->scheduler), p->context);
         switchkvm();
+
         // Process is done running for now.
         // It should have changed its p->state before coming back.
         c->proc = 0;
       }
       release(&ptable.lock);
-
     } else {
-      while(1){
-        if(tix_count!=0){
-          random = rand() % tix_count;
-          p = tickets[random];
-          if(p->state==RUNNING) break;
-        }
+      while (1) {
+        int n = rand() % tix_count;
+        p = tickets[n];
+        if (p->state == RUNNABLE) break;
       }
+
+      // Schedule the chosen process.
       acquire(&ptable.lock);
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
+      p->ticks++;
+
       swtch(&(c->scheduler), p->context);
       switchkvm();
+
       c->proc = 0;
       release(&ptable.lock);
     }
