@@ -387,6 +387,7 @@ removeTix(struct proc* process)
 void
 scheduler(void)
 {
+  int random;
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
@@ -398,6 +399,13 @@ scheduler(void)
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+
+    // If working tickets > 0, then we can use lottery system, otherwise, normal scheduler.
+     if(tix_count!=0){
+       random = rand() % tix_count;
+       p = tickets[random];
+     }
+
       if(p->state != RUNNABLE)
         continue;
 
