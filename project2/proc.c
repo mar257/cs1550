@@ -20,6 +20,14 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
+
+int
+settickets(int num_tix)
+{
+  myproc()->ntix = num_tix;
+  return 0;
+}
+
 void
 pinit(void)
 {
