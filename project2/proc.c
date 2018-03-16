@@ -376,6 +376,16 @@ removeTix(struct proc* process)
   }
 }
 
+
+// pseudo random number 'generator'
+unsigned long randstate = 1;
+unsigned int
+rand()
+{
+  randstate = randstate * 1664525 + 1013904223;
+  return randstate;
+}
+
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
@@ -387,7 +397,8 @@ removeTix(struct proc* process)
 void
 scheduler(void)
 {
-  struct proc *p;
+  int random, i;
+  struct proc *p, *selected;
   struct cpu *c = mycpu();
   c->proc = 0;
 
@@ -397,37 +408,42 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
-        continue;
+    // for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(count==0) continue;  // avoid div by 0
+    random = rand() % count;
+    selected = tickets[random];
+    p = selected;
+    if(p->state != RUNNABLE)
+    continue;
 
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->ticks++;
-      p->state = RUNNING;
-      swtch(&(c->scheduler), p->context);
-      switchkvm();
 
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      c->proc = 0;
-    }
+
+    // Switch to chosen process.  It is the process's job
+    // to release ptable.lock and then reacquire it
+    // before jumping back to us.
+    c->proc = p;
+    switchuvm(p);
+    p->ticks++;
+    p->state = RUNNING;
+    swtch(&(c->scheduler), p->context);
+    switchkvm();
+
+    // Process is done running for now.
+    // It should have changed its p->state before coming back.
+    c->proc = 0;
+
     release(&ptable.lock);
 
-  }
+  // }
 }
 
 int
 getpinfo(struct pstat* pst)
 {
   // Take process info and add to PSTAT
-  // TODO: Implement ticks.
   int i;
   acquire(&ptable.lock);
-  for (i=0; i < NPROC; i++){
+  for (i=0; i<NPROC; i++){
     struct proc process = ptable.proc[i];
     // pst->inuse[i] = 1;
     pst->inuse[i] = process.state != UNUSED;
@@ -440,14 +456,6 @@ getpinfo(struct pstat* pst)
   return 0;
 }
 
-// pseudo random number 'generator'
-unsigned long randstate = 1;
-unsigned int
-rand()
-{
-  randstate = randstate * 1664525 + 1013904223;
-  return randstate;
-}
 
 // Enter scheduler.  Must hold only ptable.lock
 // and have changed proc->state. Saves and restores
