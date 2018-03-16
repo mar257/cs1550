@@ -407,49 +407,29 @@ scheduler(void)
     // Enable interrupts on this processor.
     sti();
 
-    // If no tickets, schedule normally.
-    if(tix_count <= 0){
-      acquire(&ptable.lock);
-      for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-        if(p->state != RUNNABLE) continue;
+    // Loop over process table looking for process to run.
+    acquire(&ptable.lock);
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->state != RUNNABLE)
+        continue;
 
-        // Switch to chosen process.  It is the process's job
-        // to release ptable.lock and then reacquire it
-        // before jumping back to us.
-        c->proc = p;
-        switchuvm(p);
-        p->ticks++;
-        p->state = RUNNING;
-        swtch(&(c->scheduler), p->context);
-        switchkvm();
-        c->proc = 0;
-      }
-      release(&ptable.lock);
-
-      // Lottery scheduler if there are tickets.
-    } else {
-      acquire(&ptable.lock);
-      while(1) {
-        if(tix_count!=0){
-          random = rand() % tix_count;
-          p = tickets[random];
-          if(p->state == RUNNABLE)
-          break;
-        }
-      }
+      // Switch to chosen process.  It is the process's job
+      // to release ptable.lock and then reacquire it
+      // before jumping back to us.
       c->proc = p;
       switchuvm(p);
-      p->ticks++;
       p->state = RUNNING;
+
       swtch(&(c->scheduler), p->context);
       switchkvm();
-      c->proc = 0;
-      release(&ptable.lock);
-    }
-  }
 
-  // Process is done running for now.
-  // It should have changed its p->state before coming back.
+      // Process is done running for now.
+      // It should have changed its p->state before coming back.
+      c->proc = 0;
+    }
+    release(&ptable.lock);
+
+  }
 }
 
 
