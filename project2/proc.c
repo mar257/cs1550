@@ -397,7 +397,7 @@ rand()
 void
 scheduler(void)
 {
-  int random, i;
+  int random, i=0;
   struct proc *p, *selected;
   struct cpu *c = mycpu();
   c->proc = 0;
@@ -409,8 +409,8 @@ scheduler(void)
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
     // for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(count==0) continue;  // avoid div by 0
-    random = rand() % count;
+    if(tix_count==0) continue;  // avoid div by 0
+    random = rand() % tix_count;
     selected = tickets[random];
     p = selected;
     if(p->state != RUNNABLE)
