@@ -432,21 +432,19 @@ scheduler(void)
       for(;;){
         int random = rand() % tix_count;
         p = tickets[random];
-        if (p->state == RUNNABLE) break;
+        if (p->state == RUNNABLE){
+          // Schedule the chosen process.
+          acquire(&ptable.lock);
+          c->proc = p;
+          switchuvm(p);
+          p->state = RUNNING;
+          p->ticks++;
+          swtch(&(c->scheduler), p->context);
+          switchkvm();
+          c->proc = 0;
+          release(&ptable.lock);
+        }
       }
-
-      // Schedule the chosen process.
-      acquire(&ptable.lock);
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
-      p->ticks++;
-
-      swtch(&(c->scheduler), p->context);
-      switchkvm();
-
-      c->proc = 0;
-      release(&ptable.lock);
     }
   }
 }
