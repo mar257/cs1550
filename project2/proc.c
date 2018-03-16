@@ -28,9 +28,7 @@ static void wakeup1(void *chan);
 int
 settickets(int num_tix)
 {
-  struct proc* p = myproc();
-  if (num_tix < p->ntix) return -1;
-  p->ntix = num_tix;
+  myproc()->ntix = num_tix;
   return 0;
 }
 

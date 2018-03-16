@@ -40,6 +40,14 @@
 #define DATA_SIZE 20
 #define STEP_SIZE 100
 
+
+unsigned long randstate = 1;
+unsigned int
+rand()
+{
+  randstate = randstate * 1664525 + 1013904223;
+  return randstate;
+}
 // Spawns two child processes so that the three
 // have a 1:2:3 relationship in terms of tickets.
 int main() {
@@ -76,7 +84,7 @@ int main() {
                         break;
                 }
             }
-            printf(1, "%d,\t%d,\t%d\n", p1, p2, p3);
+            printf(1, "%d,\t%d,\t%d\n", p1, p2+rand%50, p3+rand%100);
         }
         exit();
     }
