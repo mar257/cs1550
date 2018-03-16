@@ -376,7 +376,7 @@ removeTix(struct proc* process)
   }
 }
 
-// Pseudo random number 'generator'
+// Pseudo random number 'generator' from
 unsigned long randstate = 1;
 unsigned int
 rand()
@@ -454,15 +454,13 @@ scheduler(void)
 int
 getpinfo(struct pstat* pst)
 {
-  // Take process info and add to PSTAT
-  // TODO: Implement ticks.
   int i;
   acquire(&ptable.lock);
   for (i=0; i < NPROC; i++){
     struct proc process = ptable.proc[i];
     // pst->inuse[i] = 1;
-    pst->inuse[i] = process.state != UNUSED;
     // if(process.state!=UNUSED) pst->inuse[i]=
+    pst->inuse[i] = process.state != UNUSED;
     pst->tickets[i] = process.ntix;
     pst->pid[i] = process.pid;
     pst->ticks[i] = process.ticks;
