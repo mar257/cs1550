@@ -376,7 +376,7 @@ removeTix(struct proc* process)
   }
 }
 
-// pseudo random number 'generator'
+// Pseudo random number 'generator'
 unsigned long randstate = 1;
 unsigned int
 rand()
@@ -407,34 +407,33 @@ scheduler(void)
     // Enable interrupts on this processor.
     sti();
 
-
+    // "Normal" inline scheduling
     if (tix_count <= 0) {
       acquire(&ptable.lock);
       for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-        if(p->state != RUNNABLE)
-          continue;
+        if(p->state != RUNNABLE)  continue;
 
-        // Switch to chosen process.  It is the process's job
-        // to release ptable.lock and then reacquire it
-        // before jumping back to us.
+        // Schedule
         c->proc = p;
         switchuvm(p);
         p->state = RUNNING;
         p->ticks++;
-
         swtch(&(c->scheduler), p->context);
         switchkvm();
 
         c->proc = 0;
       }
       release(&ptable.lock);
+
+      // "Lottery" scheduling
     } else {
       for(;;){
         int random = rand() % tix_count;
         p = tickets[random];
         if (p->state == RUNNABLE){
-          // Schedule the chosen process.
           acquire(&ptable.lock);
+
+          // Schedule
           c->proc = p;
           switchuvm(p);
           p->state = RUNNING;
