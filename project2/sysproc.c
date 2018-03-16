@@ -15,10 +15,10 @@ sys_getpinfo(void)
   if (argptr(0, (void*)&pst, sizeof(*pst)) < 0){
     return -1;
   }
-  if (pst == 0) {
+  if (pst == 0){
     return -1;
   }
-  return getpinfo(p);
+  return getpinfo(pst);
 }
 
 int
