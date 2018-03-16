@@ -6,6 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include "pstat.h"
 
 void addTix(int num, struct proc *process);
 void removeTix(struct proc *process);
@@ -423,8 +424,9 @@ getpinfo(struct pstat* pst)
   // Take process info and add to PSTAT
   // TODO: How do I know if an entry in the table is inuse?
   // TODO: Implement ticks.
+  int i;
   acquire(&ptable.lock);
-  for (int i = 0; i < NPROC; ++i) {
+  for (i=0; i < NPROC; i++){
     struct proc process = ptable.proc[i];
     // pst->inuse[i] = 1;
     pst->inuse[i] = process.state != UNUSED;
