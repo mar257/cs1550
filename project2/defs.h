@@ -13,7 +13,7 @@ struct pstat;
 
 // proj2.c
 int             settickets(int number);
-int             getpinfo(struct pstat *)
+int             getpinfo(struct pstat*);
 
 // bio.c
 void            binit(void);
