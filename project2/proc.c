@@ -376,6 +376,15 @@ removeTix(struct proc* process)
   }
 }
 
+// pseudo random number 'generator'
+unsigned long randstate = 1;
+unsigned int
+rand()
+{
+  randstate = randstate * 1664525 + 1013904223;
+  return randstate;
+}
+
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
