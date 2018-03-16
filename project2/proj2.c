@@ -34,9 +34,9 @@
 #include "user.h"
 #include "pstat.h"
 
-#define P1_TICKETS 10
-#define P2_TICKETS 20
-#define P3_TICKETS 30
+#define P1_TICKETS 4
+#define P2_TICKETS 8
+#define P3_TICKETS 12
 #define DATA_SIZE 10
 #define STEP_SIZE 100
 
@@ -76,7 +76,7 @@ int main() {
                         break;
                 }
             }
-            printf(1, "%d\t%d\t%d\n", p1, p2, p3);
+            printf(1, "%d,\t%d,\t%d\n", p1, p2, p3);
         }
         exit();
     }
