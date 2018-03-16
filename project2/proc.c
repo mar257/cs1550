@@ -29,7 +29,7 @@ int
 settickets(int num_tix)
 {
   struct proc* p = myproc();
-  if (number < p->tickets) return -1;
+  if (num_tix < p->tickets) return -1;
   p->ntix = num_tix;
   return 0;
 }
