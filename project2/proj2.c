@@ -34,9 +34,9 @@
 #include "user.h"
 #include "pstat.h"
 
-#define P1_TICKETS 2
-#define P2_TICKETS 4
-#define P3_TICKETS 6
+#define P1_TICKETS 10
+#define P2_TICKETS 20
+#define P3_TICKETS 30
 #define DATA_SIZE 10
 #define STEP_SIZE 100
 
