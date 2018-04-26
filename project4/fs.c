@@ -383,14 +383,14 @@ bmap(struct inode *ip, uint bn)
   }
   bn -= NDIRECT;
 
-  if(bn < 2*NINDIRECT){ // Indirect Blocks (256) go 11-266
+  if(bn < 2*NINDIRECT){ // Indirect Blocks (256) go 11-267
     // Load indirect block, allocating if necessary.
     int block_num = NDIRECT + (bn/NINDIRECT);
     if((addr = ip->addrs[block_num]) == 0)
-      ip->addrs[block_num] = addr = balloc(ip->dev);
-    bn = bn % NINDIRECT;
-    bp = bread(ip->dev, addr);
-    a = (uint*)bp->data;
+      ip->addrs[block_num] = addr = balloc(ip->dev);  // Alloc new block if it doesn't exist
+    bn = bn % NINDIRECT;  // Get Block # between 1-128 for block actually inside of indirect block
+    bp = bread(ip->dev, addr);  // Get the bread
+    a = (uint*)bp->data;        // Actual block data from the bread
     if((addr = a[bn]) == 0){
       a[bn] = addr = balloc(ip->dev);
       log_write(bp);
@@ -398,6 +398,38 @@ bmap(struct inode *ip, uint bn)
     brelse(bp);
     return addr;
   }
+
+  bn -= (2*NINDIRECT);
+  struct buf* main_buf;
+  struct buf* second_buf;
+
+  if(bn < NINDIRECT*NINDIRECT){ // Doubly Indirect Block (last block) is 128*128
+
+    int main_block_num = NINDIRECT + 2; // Should be block
+    if((addr = ip->addrs[main_block_num]) == 0)
+      ip->addrs[main_block_num] = addr = balloc(ip->dev);  // Allocate Main "Address" Block if it doesn't exist
+
+    // This manages the 'main' buf of data, or the address to the secondary blocks.
+    main_buf = bread(ip->dev, addr);
+    uint* main_data = (uint*)main_buf->data;
+    if ((addr = main_data[bn / NINDIRECT]) == 0) {
+      main_data[bn / NINDIRECT] = addr = balloc(ip->dev);
+      log_write(main_buf);
+    }
+    brelse(main_buf);
+
+    // (Secondary Block) This manages the addresses that point to the data blocks
+    second_buf = bread(ip->dev, addr);
+    uint* second_data = (uint*)second_buf->data;
+    if ((addr = second_data[bn % NINDIRECT]) == 0) {
+      second_data[bn % NINDIRECT] = addr = balloc(ip->dev);
+      log_write(second_buf);
+    }
+    brelse(second_buf);
+
+    return addr;
+  }
+
 
   panic("bmap: out of range");
 }
