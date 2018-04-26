@@ -400,8 +400,6 @@ bmap(struct inode *ip, uint bn)
   }
 
   bn -= (2*NINDIRECT);
-  struct buf* main_buf;
-  struct buf* second_buf;
 
   if(bn < NINDIRECT*NINDIRECT){ // Doubly Indirect Block (last block) is 128*128
 
@@ -410,22 +408,22 @@ bmap(struct inode *ip, uint bn)
       ip->addrs[main_block_num] = addr = balloc(ip->dev);  // Allocate Main "Address" Block if it doesn't exist
 
     // This manages the 'main' buf of data, or the address to the secondary blocks.
-    main_buf = bread(ip->dev, addr);
-    uint* main_data = (uint*)main_buf->data;
-    if ((addr = main_data[bn / NINDIRECT]) == 0) {
-      main_data[bn / NINDIRECT] = addr = balloc(ip->dev);
-      log_write(main_buf);
+    bp = bread(ip->dev, addr);
+    a = (uint*)bp->data;
+    if ((addr = a[bn / NINDIRECT]) == 0) {
+      a[bn / NINDIRECT] = addr = balloc(ip->dev);
+      log_write(bp);
     }
-    brelse(main_buf);
+    brelse(bp);
 
     // (Secondary Block) This manages the addresses that point to the data blocks
-    second_buf = bread(ip->dev, addr);
-    uint* second_data = (uint*)second_buf->data;
-    if ((addr = second_data[bn % NINDIRECT]) == 0) {
-      second_data[bn % NINDIRECT] = addr = balloc(ip->dev);
-      log_write(second_buf);
+    bp = bread(ip->dev, addr);
+    a = (uint*)bp->data;
+    if ((addr = a[bn % NINDIRECT]) == 0) {
+      a[bn % NINDIRECT] = addr = balloc(ip->dev);
+      log_write(bp);
     }
-    brelse(second_buf);
+    brelse(bp);
 
     return addr;
   }
