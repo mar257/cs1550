@@ -6,6 +6,10 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include "pstat.h"
+
+void addTix(int num, struct proc *process);
+void removeTix(struct proc *process);
 
 struct {
   struct spinlock lock;
@@ -20,10 +24,19 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
+
+int
+settickets(int num_tix)
+{
+  myproc()->ntix = num_tix;
+  return 0;
+}
+
 void
 pinit(void)
 {
   initlock(&ptable.lock, "ptable");
+
 }
 
 // Must be called with interrupts disabled
@@ -38,10 +51,10 @@ struct cpu*
 mycpu(void)
 {
   int apicid, i;
-  
+
   if(readeflags()&FL_IF)
     panic("mycpu called with interrupts enabled\n");
-  
+
   apicid = lapicid();
   // APIC IDs are not guaranteed to be contiguous. Maybe we should have
   // a reverse map, or reserve a register to store &cpus[i].
@@ -124,13 +137,14 @@ userinit(void)
   extern char _binary_initcode_start[], _binary_initcode_size[];
 
   p = allocproc();
-  
+
   initproc = p;
   if((p->pgdir = setupkvm()) == 0)
     panic("userinit: out of memory?");
   inituvm(p->pgdir, _binary_initcode_start, (int)_binary_initcode_size);
   p->sz = PGSIZE;
   memset(p->tf, 0, sizeof(*p->tf));
+  p->ntix = 1;  // every process starts with 1 ticket
   p->tf->cs = (SEG_UCODE << 3) | DPL_USER;
   p->tf->ds = (SEG_UDATA << 3) | DPL_USER;
   p->tf->es = p->tf->ds;
@@ -141,6 +155,10 @@ userinit(void)
 
   safestrcpy(p->name, "initcode", sizeof(p->name));
   p->cwd = namei("/");
+
+  p->ntix = 1;
+  p->ticks = 0;
+  addTix(1,p);
 
   // this assignment to p->state lets other cores
   // run this process. the acquire forces the above
@@ -199,6 +217,11 @@ fork(void)
   np->sz = curproc->sz;
   np->parent = curproc;
   *np->tf = *curproc->tf;
+
+  //give child same # of tix as parent, ticks=0
+  np->ntix = curproc->ntix;
+  np->ticks = 0;
+  addTix(np->ntix, np);
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
@@ -261,6 +284,9 @@ exit(void)
     }
   }
 
+  // Remove all tix from lottery for the process.
+  removeTix(curproc);
+
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
   sched();
@@ -275,7 +301,7 @@ wait(void)
   struct proc *p;
   int havekids, pid;
   struct proc *curproc = myproc();
-  
+
   acquire(&ptable.lock);
   for(;;){
     // Scan through table looking for exited children.
@@ -311,6 +337,55 @@ wait(void)
   }
 }
 
+// Array of processes to store ticket information
+#define MAX_TIX 100*NPROC // Max tickets is arbitrarily high
+#define MAX_PROC_TIX 100 // Max tickets per process is arbitrarily higher than necessary
+#define MAX_PROC 64
+int tix_count=0;  // Number of working tickets in lottery
+struct proc* tickets[MAX_TIX];
+
+// Helper methods to manage tickets/fill holes in array when removed
+void
+addTix(int num, struct proc* process)
+{
+  // Append specified number of tickets for a process to end of tix array
+  int i;
+  for(i=0; i<num; i++){
+    tickets[tix_count]=process;
+    tix_count++;
+  }
+}
+
+void
+removeTix(struct proc* process)
+{
+  int i;
+  for(i=0; i<tix_count; i++){
+
+    // If process has last ticket, just remove and decrement ticket counter
+    if(tickets[tix_count-1]==process){
+      tickets[tix_count-1]=0;
+      tix_count--;
+    }
+
+    // Swap 'empty' ticket space with last space process in array, decrement ticket counter
+    if(tickets[i]==process){
+      tickets[i]=tickets[tix_count-1];
+      tickets[tix_count-1]=0;
+      tix_count--;
+    }
+  }
+}
+
+// Pseudo random number 'generator' from
+unsigned long randstate = 1;
+unsigned int
+rand()
+{
+  randstate = randstate * 1664525 + 1013904223;
+  return randstate;
+}
+
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
@@ -319,40 +394,80 @@ wait(void)
 //  - swtch to start running that process
 //  - eventually that process transfers control
 //      via swtch back to the scheduler.
+//
+// ---Tried to compact this code more so that only one copy of switch methods needed, but kept getting errors, split it up so more simple
+int random;
 void
 scheduler(void)
 {
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
-  
+
   for(;;){
     // Enable interrupts on this processor.
     sti();
 
-    // Loop over process table looking for process to run.
-    acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
-        continue;
+    // "Normal" inline scheduling
+    if (tix_count <= 0) {
+      acquire(&ptable.lock);
+      for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+        if(p->state != RUNNABLE)  continue;
 
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
+        // Schedule
+        c->proc = p;
+        switchuvm(p);
+        p->state = RUNNING;
+        p->ticks++;
+        swtch(&(c->scheduler), p->context);
+        switchkvm();
 
-      swtch(&(c->scheduler), p->context);
-      switchkvm();
+        c->proc = 0;
+      }
+      release(&ptable.lock);
 
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      c->proc = 0;
+      // "Lottery" scheduling
+    } else {
+      for(;;){
+        int random = rand() % tix_count;
+        p = tickets[random];
+        if (p->state == RUNNABLE){
+          acquire(&ptable.lock);
+
+          // Schedule
+          c->proc = p;
+          switchuvm(p);
+          p->state = RUNNING;
+          p->ticks++;
+          swtch(&(c->scheduler), p->context);
+          switchkvm();
+          c->proc = 0;
+          release(&ptable.lock);
+        }
+      }
     }
-    release(&ptable.lock);
-
   }
+}
+
+
+
+
+int
+getpinfo(struct pstat* pst)
+{
+  int i;
+  acquire(&ptable.lock);
+  for (i=0; i < NPROC; i++){
+    struct proc process = ptable.proc[i];
+    // pst->inuse[i] = 1;
+    // if(process.state!=UNUSED) pst->inuse[i]=
+    pst->inuse[i] = process.state != UNUSED;
+    pst->tickets[i] = process.ntix;
+    pst->pid[i] = process.pid;
+    pst->ticks[i] = process.ticks;
+  }
+  release(&ptable.lock);
+  return 0;
 }
 
 // Enter scheduler.  Must hold only ptable.lock
@@ -418,7 +533,7 @@ void
 sleep(void *chan, struct spinlock *lk)
 {
   struct proc *p = myproc();
-  
+
   if(p == 0)
     panic("sleep");
 
@@ -523,12 +638,16 @@ procdump(void)
       state = states[p->state];
     else
       state = "???";
-    cprintf("%d %s %s", p->pid, state, p->name);
+    cprintf("%d %s %s %d tickets", p->pid, state, p->name, p->ntix);
     if(p->state == SLEEPING){
       getcallerpcs((uint*)p->context->ebp+2, pc);
       for(i=0; i<10 && pc[i] != 0; i++)
         cprintf(" %p", pc[i]);
     }
     cprintf("\n");
+    cprintf("Number of tickets issued: %d\n", tix_count);
+    for (int i = 0; i < tix_count; ++i) {
+      cprintf("ticketno: %d\tpid: %d\n", i, tickets[i]->pid);
+    }
   }
 }
